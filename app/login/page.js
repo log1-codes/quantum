@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast"; // Import toast for notifications
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -20,9 +21,10 @@ const Login = () => {
         });
 
         if (res?.ok) {
+            toast.success("Login successful!"); // Show success toast
             router.push("/profile");
         } else {
-            alert("Invalid email or password");
+            toast.error("Invalid email or password"); // Show error toast
         }
     };
 
@@ -70,16 +72,6 @@ const Login = () => {
                     Login
                 </button>
             </form>
-
-            {/* Login with Google Button Below Form */}
-            <div className="mt-4">
-                <button
-                    onClick={handleGoogleLogin}
-                    className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                >
-                    Login with Google
-                </button>
-            </div>
         </div>
     );
 };

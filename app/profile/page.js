@@ -3,7 +3,7 @@
 import { SessionProvider } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
-import { FaUser , Circle } from "react-icons/fa";
+import { FaUser } from "react-icons/fa"; // Import only FaUser
 
 const Profile = () => {
     const { data: session } = useSession();
@@ -13,6 +13,8 @@ const Profile = () => {
     }
 
     const { user } = session;
+
+    const platforms = user.platforms || {};
 
     return (
         <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
@@ -39,8 +41,14 @@ const Profile = () => {
                     transition={{ duration: 0.5 }}
                 />
                 <div className="text-center">
-                    <h3 className="text-2xl font-bold text-white">{user.name}</h3>
-                    <p className="text-gray-400">{user.email}</p>
+                    <h3 className="text-2xl font-bold text-white">{user.name || 'N/A'}</h3>
+                    <p className="text-gray-400">{user.email || 'N/A'}</p>
+                    <div className="text-gray-400 mt-2">
+                        <p>LeetCode: {platforms.leetcode || 'N/A'}</p>
+                        <p>CodeChef: {platforms.codechef || 'N/A'}</p>
+                        <p>Codeforces: {platforms.codeforces || 'N/A'}</p>
+                        <p>Geeks for Geeks: {platforms.geeksforgeeks || 'N/A'}</p>
+                    </div>
                 </div>
                 <motion.div
                     className="flex justify-center mt-4"
@@ -48,7 +56,7 @@ const Profile = () => {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <FaUser Circle className="text-white text-3xl" />
+                    <FaUser className="text-white text-3xl" /> {/* Correct usage */}
                 </motion.div>
             </motion.div>
         </div>

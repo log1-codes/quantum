@@ -1,3 +1,5 @@
+"use client"
+import { SessionProvider } from 'next-auth/react';
 import '../app/globals.css';
 import Navbar from '../components/Navbar';
 import ThemeToggle from '../components/ThemeToggle';
@@ -6,10 +8,13 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en">
             <body>
-                <Navbar />
+               <SessionProvider>
+               <Navbar />
                 <ThemeToggle />
                 {children}
-                <Toaster/>
+               
+               </SessionProvider>
+               <Toaster/>
             </body>
         </html>
     );

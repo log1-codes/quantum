@@ -89,6 +89,7 @@ export const authOptions = {
             email: user.email,
             name: user.name,
             image: user.image,
+           
           });
         }
       }

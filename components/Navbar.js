@@ -1,19 +1,24 @@
-"use client";
+"use client"; // Ensure this is a client component
 
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Code } from 'lucide-react';
+import { useSession, signOut } from 'next-auth/react'; // Import useSession and signOut from next-auth
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const pathname = usePathname();
+    const { data: session } = useSession(); // Get session data
 
     const navItems = [
         { name: 'Home', href: '/' },
         { name: 'Profile', href: '/profile' },
-        { name: 'Login', href: '/login' },
-        { name: 'Signup', href: '/signup' },
+        // Conditionally render Login/Logout based on session
+        ...(session ? [{ name: 'Logout', href: '#', onClick: () => signOut() }] : [
+            { name: 'Login', href: '/login' },
+            { name: 'Signup', href: '/signup' }
+        ])
     ];
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -21,11 +26,11 @@ const Navbar = () => {
     return (
         <nav className="bg-black text-gray-300 shadow-lg">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-16">
+                <div className="flex justify-between items-center h-16">
                     <div className="flex items-center">
                         <Link href="/" className="flex items-center space-x-2">
                             <Code className="h-8 w-8 text-gray-400" />
-                            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-400 to-gray-100">CodeCracker</span>
+                            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-400 to-gray-100 font-sans">CodeCracker</span>
                         </Link>
                     </div>
                     <div className="hidden md:flex items-center space-x-4">
@@ -38,6 +43,7 @@ const Navbar = () => {
                                         ? 'bg-gray-800 text-white'
                                         : 'hover:bg-gray-700 hover:text-white'
                                 }`}
+                                onClick={item.onClick} // Handle logout click
                             >
                                 {item.name}
                             </Link>
@@ -71,7 +77,7 @@ const Navbar = () => {
                                         ? 'bg-gray-800 text-white'
                                         : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                                 }`}
-                                onClick={toggleMenu}
+                                onClick={item.onClick} // Handle logout click
                             >
                                 {item.name}
                             </Link>
@@ -84,4 +90,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
