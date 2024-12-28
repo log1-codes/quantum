@@ -1,9 +1,8 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
+import GithubProvider from "next-auth/providers/github";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/lib/mongodb";
-import bcrypt from "bcryptjs";
 import User from "@/models/User";
 import connectDB from "@/lib/mongoose";
 
@@ -15,89 +14,78 @@ export const authOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       allowDangerousEmailAccountLinking: true,
     }),
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Missing email or password");
-        }
-
-        await connectDB();
-
-        const user = await User.findOne({ email: credentials.email }).lean();
-        if (!user) {
-          throw new Error("No user found with this email");
-        }
-
-        const isValid = await bcrypt.compare(credentials.password, user.password);
-        if (!isValid) {
-          throw new Error("Invalid password");
-        }
-
-        return user;
-      },
+    GithubProvider({
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET,
+      allowDangerousEmailAccountLinking: true,
     }),
   ],
+  pages: {
+    signIn: '/signup',  // Changed this to redirect to signup by default
+    error: '/signup',
+  },
   callbacks: {
     async signIn({ account, profile }) {
       await connectDB();
-      if (account.provider === "google") {
-        const existingUser = await User.findOne({ email: profile.email });
-  
-        if (existingUser) {
+      
+      // Check if user exists
+      const existingUser = await User.findOne({ email: profile.email });
+      
+      if (existingUser) {
+        // Update existing user's provider if not already added
+        if (!existingUser.providers.includes(account.provider)) {
           await User.findOneAndUpdate(
             { email: profile.email },
-            {
-              $set: {
-                name: profile.name,
-                image: profile.picture,
-              },
+            { 
+              $push: { providers: account.provider },
+              $set: { lastLogin: new Date() }
             }
           );
-        } else {
-          await User.create({
-            email: profile.email,
-            name: profile.name,
-            image: profile.picture,
-          });
         }
+        return true;
       }
+
+      // Create new user
+      await User.create({
+        email: profile.email,
+        name: profile.name,
+        image: account.provider === "google" ? profile.picture : profile.avatar_url,
+        username: profile.email.split('@')[0],
+        providers: [account.provider],
+        platforms: {
+          leetcode: "",
+          codechef: "",
+          codeforces: "",
+          geeksforgeeks: "",
+          hackerrank: ""
+        },
+        lastLogin: new Date(),
+        createdAt: new Date()
+      });
+      
       return true;
     },
+    async session({ session, user }) {
+      // Add user data to session
+      const userData = await User.findOne({ email: user.email });
+      if (userData) {
+        session.user = {
+          ...session.user,
+          username: userData.username,
+          platforms: userData.platforms,
+          providers: userData.providers
+        };
+      }
+      return session;
+    },
     async redirect({ url, baseUrl }) {
+      // Redirect to home page after auth
       return baseUrl;
     },
   },
   pages: {
     signIn: '/login',
-    signOut: '/logout',
     error: '/login',
-    verifyRequest: '/verify',
-    newUser: '/profile',
-  },
-  events: {
-    async signIn({ user, account }) {
-      await connectDB();
-      if (account.provider === "google") {
-        const existingUser = await User.findOne({ email: user.email });
-        if (!existingUser) {
-          await User.create({
-            email: user.email,
-            name: user.name,
-            image: user.image,
-           
-          });
-        }
-      }
-      await User.findOneAndUpdate(
-        { email: user.email },
-        { lastLogin: new Date() }
-      );
-    },
   },
 };
 

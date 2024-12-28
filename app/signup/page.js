@@ -1,120 +1,113 @@
-"use client"; // Ensure this is a client component
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { toast } from 'react-hot-toast'; // Assuming you are using react-hot-toast for notifications
-import { motion } from 'framer-motion';
+"use client";
 
-const Signup = () => {
-    const router = useRouter();
-    const [isLoading, setIsLoading] = useState(false);
-    const [formData, setFormData] = useState({
-        email: '',
-        name: '',
-        username: '',
-        password: '',
-        confirmPassword: '',
-        leetcode: '',
-        codechef: '',
-        codeforces: '',
-        geekforgeeks: ''
-    });
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { Github, ChevronRight } from "lucide-react";
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
+export default function Signup() {
+  const router = useRouter();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
+  const handleProviderSignUp = async (provider) => {
+    try {
+      await signIn(provider, { callbackUrl: "/" });
+    } catch (error) {
+      console.error("Signup error:", error);
+    }
+  };
 
-        // Validate form data
-        if (formData.password !== formData.confirmPassword) {
-            toast.error("Passwords do not match!");
-            setIsLoading(false);
-            return;
-        }
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
 
-        // Send signup request to your backend
-        const response = await fetch('/api/auth/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: formData.email,
-                name: formData.name,
-                username: formData.username,
-                password: formData.password,
-                platforms: {
-                    leetcode: formData.leetcode,
-                    codechef: formData.codechef,
-                    codeforces: formData.codeforces,
-                    geeksforgeeks: formData.geekforgeeks,
-                }
-            }),
-        });
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1
+    }
+  };
 
-        const data = await response.json();
-        if (data.success) {
-            toast.success("Signup successful!");
-            // Optionally sign in the user
-            await signIn('credentials', { email: formData.email, password: formData.password });
-            router.push('/profile'); // Redirect to profile after signup
-        } else {
-            toast.error(data.message || "Signup failed!");
-        }
-        setIsLoading(false);
-    };
+  return (
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-900 via-black to-black flex items-center justify-center p-4">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className="relative backdrop-blur-xl bg-black/40 p-8 rounded-2xl border border-gray-800 w-full max-w-md overflow-hidden"
+      >
+        <motion.div
+          className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500"
+          animate={{
+            x: ["-100%", "100%"],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+        
+        <motion.h2 
+          variants={itemVariants}
+          className="text-4xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent text-center mb-8"
+        >
+          Create Account
+        </motion.h2>
 
-    const handleGoogleSignup = async () => {
-        await signIn("google", { callbackUrl: "/profile" });
-    };
-
-    return (
-        <div className="min-h-screen bg-gradient-to-b from-black via-zinc-900 to-black text-white">
-            <div className="container mx-auto px-4 py-16">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="max-w-md mx-auto"
-                >
-                    <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold bg-gradient-to-r from-zinc-200 via-zinc-400 to-zinc-300 bg-clip-text text-transparent">
-                            Join CodeCracker
-                        </h1>
-                        <p className="mt-2 text-zinc-400">
-                            Connect your competitive programming profiles
-                        </p>
-                    </div>
-
-                    {/* Google Signup Button */}
-                    <button
-                        onClick={handleGoogleSignup}
-                        className="w-full max-w-sm px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 mb-4"
-                    >
-                        Sign up with Google
-                    </button>
-
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <input type="text" name="name" placeholder="Name" onChange={handleChange} required className="w-full px-4 py-2 bg-black/40 border border-zinc-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" />
-                        <input type="email" name="email" placeholder="Email" onChange={handleChange} required className="w-full px-4 py-2 bg-black/40 border border-zinc-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" />
-                        <input type="text" name="username" placeholder="Username" onChange={handleChange} required className="w-full px-4 py-2 bg-black/40 border border-zinc-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" />
-                        <input type="password" name="password" placeholder="Password" onChange={handleChange} required className="w-full px-4 py-2 bg-black/40 border border-zinc-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" />
-                        <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} required className="w-full px-4 py-2 bg-black/40 border border-zinc-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" />
-                        <input type="text" name="leetcode" placeholder="LeetCode Username (optional)" onChange={handleChange} className="w-full px-4 py-2 bg-black/40 border border-zinc-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" />
-                        <input type="text" name="codechef" placeholder="CodeChef Username (optional)" onChange={handleChange} className="w-full px-4 py-2 bg-black/40 border border-zinc-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" />
-                        <input type="text" name="codeforces" placeholder="Codeforces Username (optional)" onChange={handleChange} className="w-full px-4 py-2 bg-black/40 border border-zinc-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" />
-                        <input type="text" name="geekforgeeks" placeholder="Geeks for Geeks Username (optional)" onChange={handleChange} className="w-full px-4 py-2 bg-black/40 border border-zinc-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" />
-                        <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-3 font-medium transition-colors" disabled={isLoading}>
-                            {isLoading ? 'Setting up your profile...' : 'Complete Setup'}
-                        </button>
-                    </form>
-                </motion.div>
+        <div className="space-y-4">
+          <motion.button
+            variants={itemVariants}
+            whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.15)" }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => handleProviderSignUp("google")}
+            className="w-full bg-white/10 text-white px-6 py-4 rounded-xl flex items-center justify-between group transition-all duration-300"
+          >
+            <div className="flex items-center space-x-3">
+              <img src="/Images/google.svg" alt="Google" className="w-6 h-6" />
+              <span className="font-medium">Sign up with Google</span>
             </div>
-        </div>
-    );
-};
+            <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
+          </motion.button>
 
-export default Signup;
+          <motion.button
+            variants={itemVariants}
+            whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.15)" }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => handleProviderSignUp("github")}
+            className="w-full bg-white/10 text-white px-6 py-4 rounded-xl flex items-center justify-between group transition-all duration-300"
+          >
+            <div className="flex items-center space-x-3">
+              <Github className="w-6 h-6" />
+              <span className="font-medium">Sign up with GitHub</span>
+            </div>
+            <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
+          </motion.button>
+        </div>
+
+        <motion.div 
+          variants={itemVariants}
+          className="mt-8 text-center"
+        >
+          <p className="text-gray-400">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="text-blue-400 hover:text-blue-300 transition-colors font-medium relative group"
+            >
+              Login here
+              <span className="absolute bottom-0 left-0 w-full h-px bg-blue-400 transform scale-x-0 group-hover:scale-x-100 transition-transform" />
+            </Link>
+          </p>
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+}

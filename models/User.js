@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
+
 const UserSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: false }, 
   name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
   image: { type: String },
+  username: { type: String },
   platforms: {
     leetcode: { type: String },
     codechef: { type: String },
@@ -12,14 +12,9 @@ const UserSchema = new mongoose.Schema({
     geeksforgeeks: { type: String },
     hackerrank: { type: String }
   },
-  lastLogin: { type: Date, default: null }, 
+  providers: [String],
+  lastLogin: { type: Date, default: Date.now },
   createdAt: { type: Date, default: Date.now }
 });
 
-UserSchema.pre('save', async function(next) {
-  if (this.password && this.isModified('password')) {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
-  next();
-});
 export default mongoose.models.User || mongoose.model('User', UserSchema);

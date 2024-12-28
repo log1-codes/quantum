@@ -1,33 +1,37 @@
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../auth/[...nextauth]/route";
-import connectDB from "@/lib/mongoose";
-import User from "@/models/User";
+import { NextResponse } from 'next/server';
+import connectDB from '@/lib/mongoose';
+import User from '@/models/User';
 
-export async function POST(req) {
+export async function GET(request) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-      });
+    const { searchParams } = new URL(request.url);
+    const username = searchParams.get('username');
+
+    if (!username) {
+      return NextResponse.json(
+        { error: 'Username is required' },
+        { status: 400 }
+      );
     }
 
-    const platforms = await req.json();
     await connectDB();
+    const user = await User.findOne({ username: decodeURIComponent(username) });
 
-    await User.findOneAndUpdate(
-      { email: session.user.email },
-      { platforms },
-      { upsert: true }
-    );
+    if (!user) {
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      );
+    }
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
+    return NextResponse.json({
+      platforms: user.platforms || {}
     });
   } catch (error) {
-    console.error('Error updating user platforms:', error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-    });
+    console.error('Error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
