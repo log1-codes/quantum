@@ -21,17 +21,17 @@ export async function GET() {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    console.log("User found:", {
-      email: user.email,
-      platforms: user.platforms,
-    });
+    // console.log("User found:", {
+    //   email: user.email,
+    //   platforms: user.platforms,
+    // });
 
     
     let leetcodeStats = null;
     if (user.platforms?.leetcode) {
       try {
         leetcodeStats = await getLeetcodeStats(user.platforms.leetcode);
-        console.log("Leetcode  stats result:", leetcodeStats);
+        // console.log("Leetcode  stats result:", leetcodeStats);
         if (!leetcodeStats) {
           throw new Error("Failed to fetch leetcodes stats");
         }

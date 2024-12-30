@@ -2,7 +2,6 @@
 import { SessionProvider } from 'next-auth/react';
 import '../app/globals.css';
 import Navbar from '../components/Navbar';
-import ThemeToggle from '../components/ThemeToggle';
 import { Toaster } from 'react-hot-toast';
 export default function RootLayout({ children }) {
     return (
@@ -10,7 +9,6 @@ export default function RootLayout({ children }) {
             <body>
                <SessionProvider>
                <Navbar />
-                <ThemeToggle />
                 {children}
                
                </SessionProvider>

@@ -11,7 +11,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState(() => ({
     name: "",
     username: "",
     email: "",
@@ -20,7 +20,7 @@ export default function ProfilePage() {
       codechef: "",
       codeforces: "",
     },
-  });
+  }));
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -28,10 +28,11 @@ export default function ProfilePage() {
       return;
     }
 
-    if (session?.user?.email) {
+    // Fetch user data only if it's not already set
+    if (session?.user?.email && !userData.email) {
       fetchUserData();
     }
-  }, [session, status]);
+  }, [session, status, userData]);
 
   const fetchUserData = async () => {
     try {

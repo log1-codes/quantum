@@ -92,8 +92,6 @@ export default function StatsPage() {
     const easySolved = solvedProblems.easySolved || 0;
     const mediumSolved = solvedProblems.mediumSolved || 0;
     const hardSolved = solvedProblems.hardSolved || 0;
-
-    // Sort contest data by date
     const sortedContests = [...contestData.contestParticipation].sort((a, b) => 
       a.contest.startTime - b.contest.startTime
     );
