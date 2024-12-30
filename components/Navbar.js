@@ -231,19 +231,20 @@ export default function Navbar() {
                 </motion.button>
 
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Link
-                    href="/chat"
-                    className={`
-                      p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10
-                      ${pathname === '/chat' ? 'bg-violet-500/15 text-violet-300' : ''}
-                    `}
-                  >
-                    <MessagesSquare className="w-4 h-4" />
-                  </Link>
-                </motion.div>
+  whileHover={{ scale: 1.05 }}
+  whileTap={{ scale: 0.95 }}
+>
+  <Link
+    href="/chat"
+    className={`
+      flex items-center justify-center
+      w-12 h-12 rounded-lg text-white/70 hover:text-white hover:bg-white/10
+      ${pathname === '/chat' ? 'bg-violet-500/15 text-violet-300' : ''}
+    `}
+  >
+    <MessagesSquare className="w-6 h-6" /> {/* Adjust icon size if necessary */}
+  </Link>
+</motion.div>
               </div>
 
               {session?.user && (
