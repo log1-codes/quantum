@@ -1,4 +1,3 @@
-// Create this file at: app/api/platforms/verify/route.js
 import { NextResponse } from 'next/server';
 
 export async function POST(request) {

@@ -20,7 +20,6 @@ export async function GET(request) {
     const messagesCollection = db.collection('messages');
 
     if (query) {
-      // Search users by query
       const users = await usersCollection.find({
         $and: [
           { 
@@ -39,7 +38,6 @@ export async function GET(request) {
 
       return NextResponse.json({ users });
     } else {
-      // Get user list of people the current user has talked with
       const sentMessages = await messagesCollection.distinct('recipientEmail', { senderEmail: session.user.email });
       const receivedMessages = await messagesCollection.distinct('senderEmail', { recipientEmail: session.user.email });
       const userEmails = Array.from(new Set([...sentMessages, ...receivedMessages]));

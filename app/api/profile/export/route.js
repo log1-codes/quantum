@@ -14,13 +14,11 @@ export default function ExportButton() {
       
       if (!response.ok) throw new Error('Export failed');
 
-      // Get the filename from the Content-Disposition header
       const contentDisposition = response.headers.get('Content-Disposition');
       const filename = contentDisposition
         ? contentDisposition.split('filename=')[1].replace(/"/g, '')
         : 'codecracker-stats.json';
 
-      // Convert response to blob and download
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');

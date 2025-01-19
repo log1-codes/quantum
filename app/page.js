@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, BarChart2, Brain, Code2, Trophy, Zap } from "lucide-react";
+import { ArrowRight, BarChart2, Brain, Code2, Trophy, Zap, AlertTriangle } from 'lucide-react';
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -30,76 +30,7 @@ export default function Home() {
     }
   ];
 
-  if (isLoading) {
-    return (
-      <main className="min-h-screen bg-gradient-to-b from-zinc-950 to-black text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(29,78,216,0.1),transparent_50%)]" />
-        <section className="relative pt-32 pb-20">
-          <div className="max-w-5xl mx-auto px-4 text-center">
-            <div className="space-y-6">
-              <div className="h-16 bg-zinc-800/50 rounded-lg animate-pulse mx-auto max-w-2xl" />
-              <div className="h-4 bg-zinc-800/50 rounded-lg animate-pulse mx-auto max-w-xl" />
-              <div className="h-4 bg-zinc-800/50 rounded-lg animate-pulse mx-auto max-w-lg" />
-              <div className="flex justify-center gap-4 mt-8">
-                <div className="w-32 h-12 bg-zinc-800/50 rounded-lg animate-pulse" />
-                <div className="w-32 h-12 bg-zinc-800/50 rounded-lg animate-pulse" />
-              </div>
-            </div>
-          </div>
-        </section>
-        <section className="py-20">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="p-6 rounded-xl bg-zinc-800/50 animate-pulse">
-                  <div className="w-8 h-8 bg-zinc-700 rounded-lg mb-4" />
-                  <div className="h-6 bg-zinc-700 rounded-lg w-24 mb-2" />
-                  <div className="h-4 bg-zinc-700 rounded-lg w-full" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-        <section className="py-20 bg-black/30">
-          <div className="max-w-4xl mx-auto px-4">
-            <div className="p-8 rounded-xl bg-zinc-800/50 animate-pulse">
-              <div className="h-8 bg-zinc-700 rounded-lg w-64 mx-auto mb-8" />
-              <div className="flex justify-center gap-8 flex-wrap">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-6 w-24 bg-zinc-700 rounded-lg" />
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Skeleton */}
-        <section className="py-20">
-          <div className="max-w-4xl mx-auto px-4 text-center">
-            <div className="space-y-6">
-              <div className="h-10 bg-zinc-800/50 rounded-lg w-48 mx-auto" />
-              <div className="h-4 bg-zinc-800/50 rounded-lg w-64 mx-auto" />
-              <div className="h -12 bg-zinc-800/50 rounded-lg w-32 mx-auto" />
-            </div>
-          </div>
-        </section>
-
-        {/* Footer Skeleton */}
-        <footer className="border-t border-zinc-800/50">
-          <div className="max-w-6xl mx-auto px-4 py-8">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="h-6 w-24 bg-zinc-800/50 rounded-lg" />
-              <div className="flex gap-6">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="h-4 w-16 bg-zinc-800/50 rounded-lg" />
-                ))}
-              </div>
-            </div>
-          </div>
-        </footer>
-      </main>
-    );
-  }
+ 
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-zinc-950 to-black text-white">
@@ -122,6 +53,7 @@ export default function Home() {
               Join the next generation of developers mastering algorithms through AI-powered learning
             </p>
 
+              
             <div className="flex flex-wrap gap-4 justify-center">
               <motion.button
                 whileHover={{ scale: 1.02 }}
@@ -148,6 +80,27 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+        {/* Caution */}
+        <section className="">
+        <div className="max-w-4xl mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="p-8 rounded-xl bg-yellow-900/20 border border-yellow-500/30"
+          >
+            <div className="flex items-center justify-center mb-6">
+              <AlertTriangle className="w-12 h-12 text-yellow-500 mr-4" />
+              <h2 className="text-3xl font-bold text-yellow-500">Caution</h2>
+            </div>
+            <h2 className="text-xl text-gray-400 font-semibold mb-4">
+            Heads up! We're currently fetching the latest data for you, which may take a little time. Please allow us 30-50 seconds to gather everything you need. Rest assured, you won’t need to refresh the page manually—just sit tight while we work behind the scenes! Thank you for your patience. 😊
+            </h2>
+          </motion.div>
+        </div>
+      </section>
+
 
       {/* Features */}
       <section className="py-20">
@@ -178,7 +131,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0 }}
-            whileInView ={{ opacity: 1 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             className="p-8 rounded-xl bg-zinc-900/50 border border-zinc-800/50"
           >
@@ -205,6 +158,7 @@ export default function Home() {
         </div>
       </section>
 
+    
       {/* CTA */}
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 text-center">
@@ -256,3 +210,4 @@ export default function Home() {
     </main>
   );
 }
+

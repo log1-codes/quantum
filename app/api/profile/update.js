@@ -14,7 +14,6 @@ export default async function handler(req, res) {
 
       const { username, platforms } = req.body;
 
-      // Check if the file was uploaded
       if (!req.files || !req.files.image) {
         return res.status(400).json({ error: "Image file is required." });
       }
@@ -22,17 +21,14 @@ export default async function handler(req, res) {
       const imageFile = req.files.image;
       const imagePath = `/uploads/${Date.now()}-${imageFile.name}`;
 
-      // Move the uploaded file to the desired location
       const fs = require('fs');
       const path = require('path');
       const uploadPath = path.join(process.cwd(), 'public/uploads', imagePath);
 
-      // Use the fs module to write the file
       fs.writeFileSync(uploadPath, imageFile.data);
 
       const parsedPlatforms = JSON.parse(platforms);
 
-      // Update user in the database
       const user = await User.findByIdAndUpdate(session.user.id, { username, image: imagePath, platforms: parsedPlatforms }, { new: true });
 
       if (!user) {

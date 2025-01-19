@@ -28,7 +28,6 @@ export default function ProfilePage() {
       return;
     }
 
-    // Fetch user data only if it's not already set
     if (session?.user?.email && !userData.email) {
       fetchUserData();
     }

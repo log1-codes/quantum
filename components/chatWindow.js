@@ -17,7 +17,7 @@ export default function ChatWindow({ selectedUser }) {
 
   useEffect(() => {
     if (selectedUser) {
-      setMessages([]); // Clear messages when user changes
+      setMessages([]); 
       fetchMessages();
     }
   }, [selectedUser]);
@@ -126,7 +126,6 @@ export default function ChatWindow({ selectedUser }) {
         </div>
       </div>
 
-      {/* Messages List */}
       <div 
         ref={messageListRef}
         onScroll={handleScroll}

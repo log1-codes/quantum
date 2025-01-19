@@ -1,10 +1,10 @@
 'use client';
-
+import React ,{Suspense} from 'react';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import ChatWindow from '@/components/chatWindow';
-
+import LoadingSpinner from '@/components/profile/LoadingSpinner';
 export default function ChatPage() {
   const { data: session, status } = useSession();
   const [selectedUser, setSelectedUser] = useState(null);
@@ -57,7 +57,8 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-950 to-black text-white">
+  < Suspense fallback={<LoadingSpinner />}>
+       <div className="min-h-screen bg-gradient-to-b from-zinc-950 to-black text-white">
       <div className="container mx-auto p-4 pt-24">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[calc(100vh-8rem)]">
           {/* Sidebar */}
@@ -114,5 +115,6 @@ export default function ChatPage() {
         </div>
       </div>
     </div>
+  </Suspense>
   );
 }

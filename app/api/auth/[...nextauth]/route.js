@@ -21,18 +21,15 @@ export const authOptions = {
     }),
   ],
   pages: {
-    signIn: '/signup',  // Changed this to redirect to signup by default
+    signIn: '/signup',
     error: '/signup',
   },
   callbacks: {
     async signIn({ account, profile }) {
       await connectDB();
-      
-      // Check if user exists
       const existingUser = await User.findOne({ email: profile.email });
       
       if (existingUser) {
-        // Update existing user's provider if not already added
         if (!existingUser.providers.includes(account.provider)) {
           await User.findOneAndUpdate(
             { email: profile.email },
@@ -44,8 +41,6 @@ export const authOptions = {
         }
         return true;
       }
-
-      // Create new user
       await User.create({
         email: profile.email,
         name: profile.name,
@@ -66,7 +61,6 @@ export const authOptions = {
       return true;
     },
     async session({ session, user }) {
-      // Add user data to session
       const userData = await User.findOne({ email: user.email });
       if (userData) {
         session.user = {
@@ -79,7 +73,6 @@ export const authOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      // Redirect to home page after auth
       return baseUrl;
     },
   },

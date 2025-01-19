@@ -15,7 +15,6 @@ export async function PUT(request) {
     }
 
     const data = await request.json();
-    // console.log('Updating user with data:', data); // Debug log
 
     await connectDB();
     
@@ -29,7 +28,6 @@ export async function PUT(request) {
       { new: true, upsert: true }
     );
 
-    // console.log('Updated user:', updatedUser); // Debug log
 
     return NextResponse.json(updatedUser);
   } catch (error) {

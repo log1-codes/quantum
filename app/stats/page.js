@@ -15,6 +15,7 @@ import {
 } from 'chart.js';
 import { SiLeetcode , SiCodeforces , SiCodechef} from "react-icons/si";
 
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -306,13 +307,14 @@ export default function StatsPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-[200px] w-full bg-zinc-900 animate-pulse rounded-lg" />
+        <div className="h-24 bg-zinc-900 animate-pulse rounded-lg" />
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="h-[300px] bg-zinc-900 animate-pulse rounded-lg" />
-          <div className="h-[300px] bg-zinc-900 animate-pulse rounded-lg" />
+          <div className="h-48 bg-zinc-900 animate-pulse rounded-lg" />
+          <div className="h-48 bg-zinc-900 animate-pulse rounded-lg" />
         </div>
-        <div className="h-[400px] bg-zinc-900 animate-pulse rounded-lg" />
+        <div className="h-96 bg-zinc-900 animate-pulse rounded-lg" />
       </div>
+     
     );
   }
 
@@ -647,7 +649,7 @@ export default function StatsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black p-6">
+    <div className="min-h-screen bg-black py-28">
       <div className="max-w-7xl mx-auto space-y-6">
         <h1 className="text-2xl font-bold text-white mb-8">Coding Profiles</h1>
 

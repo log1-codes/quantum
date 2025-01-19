@@ -26,8 +26,6 @@ export async function GET() {
       );
     }
 
-    // Debug log
-    // console.log('User platforms:', user.platforms);
 
     let leetcodeStats = null;
     if (user.platforms?.leetcode) {

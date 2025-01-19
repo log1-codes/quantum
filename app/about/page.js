@@ -37,7 +37,7 @@ export default function AboutPage() {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+          <h1 className="py-10 text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
             Your Coding Journey, Unified
           </h1>
           <p className="text-xl text-zinc-400 max-w-2xl mx-auto">

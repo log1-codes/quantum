@@ -17,13 +17,11 @@ export default function UserStats() {
   useEffect(() => {
     const fetchUserPlatforms = async () => {
       try {
-        // First fetch the user's platform usernames
         const response = await fetch(`/api/user/platforms?username=${username}`);
         if (!response.ok) throw new Error('Failed to fetch user platforms');
         const data = await response.json();
         setPlatformUsernames(data.platforms);
         
-        // Then fetch stats for each platform
         const statsPromises = Object.entries(data.platforms).map(async ([platform, platformUsername]) => {
           if (!platformUsername) return [platform, null];
           
@@ -134,7 +132,6 @@ export default function UserStats() {
                       </>
                     )}
                     
-                    {/* Add similar sections for other platforms */}
                   </div>
                 ) : (
                   <p className="text-zinc-500">Failed to fetch stats</p>
