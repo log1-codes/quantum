@@ -1,4 +1,4 @@
-// Create this file at: components/profile/LoadingSpinner.js
+
 export default function LoadingSpinner() {
     return (
       <div className="flex items-center justify-center">
