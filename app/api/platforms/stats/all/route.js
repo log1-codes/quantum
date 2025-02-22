@@ -6,6 +6,8 @@ import connectDB from "@/lib/mongoose";
 import { getLeetcodeStats } from "@/lib/platforms/leetcode";
 import { getCodechefStats } from "@/lib/platforms/codechef";
 import { getCodeforcesStats } from "@/lib/platforms/codeforces";
+import { getGithubStats } from "@/lib/platforms/github";
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -18,17 +20,15 @@ export async function GET() {
     const user = await User.findOne({ email: session.user.email });
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: "User  not found" }, { status: 404 });
     }
 
-
-    
     let leetcodeStats = null;
     if (user.platforms?.leetcode) {
       try {
         leetcodeStats = await getLeetcodeStats(user.platforms.leetcode);
         if (!leetcodeStats) {
-          throw new Error("Failed to fetch leetcodes stats");
+          throw new Error("Failed to fetch LeetCode stats");
         }
       } catch (error) {
         console.error("LeetCode stats error:", error);
@@ -68,10 +68,26 @@ export async function GET() {
       console.log("No CodeChef username found in user data");
     }
 
+    let githubStats = null;
+    if (user.platforms?.github) {
+      try {
+        githubStats = await getGithubStats(user.platforms.github);
+        if (!githubStats) {
+          throw new Error("Failed to fetch GitHub Stats");
+        }
+      } catch (error) {
+        console.log("GitHub Stats Error", error);
+        githubStats = { error: "Failed to fetch the GitHub Stats" };
+      }
+    } else {
+      console.log("No GitHub username found in user data");
+    }
+
     return NextResponse.json({
       leetcode: leetcodeStats,
       codeforces: codeforcesStats,
       codechef: codechefStats,
+      github: githubStats,
       platforms: user.platforms,
     });
   } catch (error) {

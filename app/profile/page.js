@@ -19,7 +19,9 @@ export default function ProfilePage() {
       leetcode: "",
       codechef: "",
       codeforces: "",
+      github:""
     },
+    
   }));
 
   useEffect(() => {
@@ -51,7 +53,9 @@ export default function ProfilePage() {
           leetcode: data.platforms?.leetcode || "",
           codechef: data.platforms?.codechef || "",
           codeforces: data.platforms?.codeforces || "",
+          github: data.platforms?.github|| ""
         },
+       
       });
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -84,7 +88,9 @@ export default function ProfilePage() {
           leetcode: updatedData.platforms?.leetcode || prev.platforms.leetcode,
           codechef: updatedData.platforms?.codechef || prev.platforms.codechef,
           codeforces: updatedData.platforms?.codeforces || prev.platforms.codeforces,
+          github : updatedData.platforms?.github || prev.platforms.github
         },
+       
       }));
     } catch (error) {
       toast.error("Failed to update profile");
@@ -202,6 +208,16 @@ export default function ProfilePage() {
                       }))}
                       placeholder="Enter CodeChef username"
                     />
+                    <InputField
+                      label="GIthub Username"
+                      value={userData.platforms.github}
+                      onChange={(e) => setUserData(prev => ({
+                        ...prev,
+                        platforms: { ...prev.platforms, github: e.target.value }
+                      }))}
+                      placeholder="Enter Github username"
+                    />
+                
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -216,6 +232,10 @@ export default function ProfilePage() {
                     <DisplayField
                       label="CodeChef"
                       value={userData.platforms.codechef || "Not set"}
+                    />
+                    <DisplayField
+                      label="Github"
+                      value={userData.platforms.github || "Not set"}
                     />
                   </div>
                 )}

@@ -5,9 +5,37 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
-import { Menu, X, Zap, Activity, Info, MessageCircle, User, LogOut, Search, MessagesSquare } from 'lucide-react';
+import { 
+  Menu, X, Zap, Activity, Info, MessageCircle, 
+  User, LogOut, Search, MessagesSquare
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { debounce } from 'lodash';
+
+const navVariants = {
+  hidden: { y: -100, opacity: 0 },
+  visible: { 
+    y: 0, 
+    opacity: 1,
+    transition: { 
+      type: "spring",
+      stiffness: 100,
+      damping: 20
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: (i) => ({
+    opacity: 1,
+    x: 0,
+    transition: {
+      delay: i * 0.1,
+      duration: 0.3
+    }
+  })
+};
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,8 +52,15 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      const scrollThreshold = window.innerHeight * 0.1;
+      setScrolled(window.scrollY > scrollThreshold);
     };
+
+    const handleResize = debounce(() => {
+      if (window.innerWidth >= 768) {
+        setIsMenuOpen(false);
+      }
+    }, 100);
 
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -36,11 +71,14 @@ export default function Navbar() {
     };
 
     window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResize);
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
       document.removeEventListener('mousedown', handleClickOutside);
+      handleResize.cancel();
     };
   }, []);
 
@@ -86,7 +124,7 @@ export default function Navbar() {
     { name: 'About', href: '/about', icon: <Info className="w-4 h-4" /> },
     { name: 'Contact', href: '/contact', icon: <MessageCircle className="w-4 h-4" /> },
     ...(session ? [
-      { name: 'Profile', href: '/profile', icon: <User  className="w-4 h-4" /> },
+      { name: 'Profile', href: '/profile', icon: <User className="w-4 h-4" /> },
       { name: 'Logout', href: '#', icon: <LogOut className="w-4 h-4" />, onClick: () => signOut() }
     ] : [
       { name: 'Login', href: '/login' },
@@ -95,30 +133,33 @@ export default function Navbar() {
   ];
 
   return (
-    <div className="fixed top-0 left-0 right-0 flex justify-center w-full z-50 px-4 pt-6">
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
+    <motion.div 
+      className="fixed top-0 left-0 right-0 flex justify-center w-full z-50 px-4 pt-4 sm:pt-6"
+      variants={navVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <nav
         className={`
           w-full max-w-7xl rounded-2xl
           ${scrolled 
-            ? 'bg-white/10 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/5' 
-            : 'bg-white/5 backdrop-blur-sm'}
-          transition-all duration-300
+            ? 'bg-black/20 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/5' 
+            : 'bg-black/10 backdrop-blur-sm'}
+          transition-all duration-500 ease-in-out
         `}
       >
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
+            {/* Logo */}
             <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
               className="flex items-center"
+              whileHover={{ scale: 1.02 }}
             >
               <Link href="/" className="flex items-center space-x-2 group">
                 <motion.div
                   whileHover={{ scale: 1.1, rotate: 180 }}
                   transition={{ duration: 0.3 }}
-                  className="p-2 rounded-xl bg-violet-500/10"
+                  className="p-2 rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20"
                 >
                   <Zap className="h-5 w-5 text-violet-400" />
                 </motion.div>
@@ -128,10 +169,15 @@ export default function Navbar() {
               </Link>
             </motion.div>
 
-            <div className="hidden md:flex items-center gap-4">
-              {navItems.map((item) => (
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-3">
+              {navItems.map((item, i) => (
                 <motion.div
                   key={item.name}
+                  custom={i}
+                  variants={itemVariants}
+                  initial="hidden"
+                  animate="visible"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -139,10 +185,10 @@ export default function Navbar() {
                     href={item.href}
                     onClick={item.onClick}
                     className={`
-                      flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium
-                      transition-all duration-200
+                      flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
+                      transition-all duration-200 ease-in-out
                       ${pathname === item.href 
-                        ? 'bg-violet-500/15 text-violet-300' 
+                        ? 'bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-violet-300' 
                         : 'text-white/70 hover:text-white hover:bg-white/10'}
                     `}
                   >
@@ -152,14 +198,15 @@ export default function Navbar() {
                 </motion.div>
               ))}
 
-              {/* Search and Chat Icons */}
-              <div className="flex items-center gap-2" ref={searchRef}>
+              {/* Action Icons */}
+              <div className="flex items-center gap-2 ml-2" ref={searchRef}>
                 <AnimatePresence>
                   {isSearchOpen && (
                     <motion.div
                       initial={{ width: 0, opacity: 0 }}
-                      animate={{ width: 200, opacity: 1 }}
+                      animate={{ width: 250, opacity: 1 }}
                       exit={{ width: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
                       className="relative"
                     >
                       <input
@@ -167,163 +214,203 @@ export default function Navbar() {
                         placeholder="Search users..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full px-3 py-1.5 rounded-lg bg-white/10 border border-white/20 
-                                 text-white placeholder-white/50 text-sm focus:outline-none 
-                                 focus:border-violet-400/60"
+                        className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 
+                                 text-white placeholder-white/40 text-sm focus:outline-none 
+                                 focus:border-violet-400/60 focus:bg-white/10 transition-all duration-200"
                         autoFocus
                       />
                       
                       {/* Search Results Dropdown */}
-                      {(searchResults.length > 0 || isLoading || error) && (
-                        <div className="absolute top-full left-0 w-full mt-2 py-2 bg-white/10 backdrop-blur-xl 
-                                      border border-white/20 rounded-lg shadow-lg">
-                          {isLoading && (
-                            <div className="px-4 py-2 text-white/70 text-sm">
-                              Searching...
-                            </div>
-                          )}
-                          
-                          {error && (
-                            <div className="px-4 py-2 text-red-400 text-sm">
-                              {error}
-                            </div>
-                          )}
-
-                          {searchResults.map((user) => (
-                            <div
-                              key={user._id}
-                              onClick={() => handleUserSelect(user)}
-                              className="px-4 py-2 hover:bg-white/10 cursor-pointer flex items-center gap-3"
-                            >
-                              {user.image ? (
-                                <Image
-                                  src={user.image}
-                                  alt={user.name}
-                                  width={24}
-                                  height={24}
-                                  className="rounded-full"
-                                />
-                              ) : (
-                                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-400 to-fuchsia-500 
-                                              flex items-center justify-center text-white text-xs">
-                                  {user.name?.[0] || 'U'}
-                                </div>
-                              )}
-                              <div>
-                                <div className="text-sm font-medium text-white">{user.name}</div>
-                                <div className="text-xs text-white/70">{user.email}</div>
+                      <AnimatePresence>
+                        {(searchResults.length > 0 || isLoading || error) && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="absolute top-full left-0 w-full mt-2 py-2 bg-black/40 backdrop-blur-xl 
+                                     border border-white/10 rounded-lg shadow-xl"
+                          >
+                            {isLoading && (
+                              <div className="px-4 py-2 text-white/70 text-sm flex items-center gap-2">
+                                <motion.div
+                                  animate={{ rotate: 360 }}
+                                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                >
+                                  <Activity className="w-4 h-4" />
+                                </motion.div>
+                                Searching...
                               </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                            )}
+                            
+                            {error && (
+                              <div className="px-4 py-2 text-red-400 text-sm">
+                                {error}
+                              </div>
+                            )}
+
+                            {searchResults.map((user, i) => (
+                              <motion.div
+                                key={user._id}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: i * 0.1 }}
+                                onClick={() => handleUserSelect(user)}
+                                className="px-4 py-2 hover:bg-white/10 cursor-pointer flex items-center gap-3
+                                         transition-colors duration-200"
+                              >
+                                {user.image ? (
+                                  <Image
+                                    src={user.image}
+                                    alt={user.name}
+                                    width={32}
+                                    height={32}
+                                    className="rounded-full"
+                                  />
+                                ) : (
+                                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-400 to-fuchsia-500 
+                                                flex items-center justify-center text-white text-sm">
+                                    {user.name?.[0] || 'U'}
+                                  </div>
+                                )}
+                                <div>
+                                  <div className="text-sm font-medium text-white">{user.name}</div>
+                                  <div className="text-xs text-white/50">{user.email}</div>
+                                </div>
+                              </motion.div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </motion.div>
                   )}
                 </AnimatePresence>
-                
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setIsSearchOpen(!isSearchOpen)}
-                  className="p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10"
-                >
-                  <Search className="w-4 h-4" />
-                </motion.button>
 
-                <motion.div
-  whileHover={{ scale: 1.05 }}
-  whileTap={{ scale: 0.95 }}
->
-  <Link
-    href="/chat"
-    className={`
-      flex items-center justify-center
-      w-12 h-12 rounded-lg text-white/70 hover:text-white hover:bg-white/10
-      ${pathname === '/chat' ? 'bg-violet-500/15 text-violet-300' : ''}
-    `}
-  >
-    <MessagesSquare className="w-6 h-6" /> {/* Adjust icon size if necessary */}
-  </Link>
-</motion.div>
+                {/* Action Buttons */}
+                <div className="flex items-center gap-1">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setIsSearchOpen(!isSearchOpen)}
+                    className="p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10
+                             transition-colors duration-200"
+                  >
+                    <Search className="w-4 h-4" />
+                  </motion.button>
+
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="relative"
+                  >
+                    <Link
+                      href="/chat"
+                      className={`
+                        flex items-center justify-center p-2 rounded-lg
+                        text-white/70 hover:text-white hover:bg-white/10
+                        transition-colors duration-200
+                        ${pathname === '/chat' ? 'bg-violet-500/15 text-violet-300' : ''}
+                      `}
+                    >
+                      <MessagesSquare className="w-4 h-4" />
+                    </Link>
+                  </motion.div>
+
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="relative"
+                  >
+                 
+                  </motion.div>
+                </div>
+
+                {/* User Profile */}
+                {session?.user && (
+                  <motion.div 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    whileHover={{ scale: 1.05 }}
+                    className="ml-2"
+                  >
+                    <div className="h-9 w-9 rounded-lg overflow-hidden border border-violet-400/30 
+                                  hover:border-violet-400/60 transition-colors duration-200
+                                  hover:shadow-lg hover:shadow-violet-500/10">
+                      {session.user.image ? (
+                        <Image
+                          src={session.user.image}
+                          alt="Profile"
+                          width={36}
+                          height={36}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="h-full w-full bg-gradient-to-br from-violet-400 to-fuchsia-500 
+                                      flex items-center justify-center text-white text-sm font-medium">
+                          {session.user.name?.[0] || 'U'}
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
               </div>
-
-              {session?.user && (
-                <motion.div 
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="ml-2"
-                >
-                  <div className="h-8 w-8 rounded-lg overflow-hidden border border-violet-400/30 hover:border-violet-400/60 transition-colors">
-                    {session.user.image ? (
-                      <Image
-                        src={session.user.image}
-                        alt="Profile"
-                        width={32}
-                        height={32}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="h-full w-full bg-gradient-to-br from-violet-400 to-fuchsia-500 flex items-center justify-center text-white text-sm font-medium">
-                        {session.user.name?.[0] || 'U'}
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              )}
             </div>
 
+            {/* Mobile Menu Button */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10"
+              className="md:hidden p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10
+                         transition-colors duration-200"
             >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={isMenuOpen ? 'close' : 'menu'}
+                  initial={{ opacity: 0, rotate: -90 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  exit={{ opacity: 0, rotate: 90 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                </motion.div>
+              </AnimatePresence>
             </motion.button>
           </div>
         </div>
 
+        {/* Mobile Menu */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
               className="md:hidden border-t border-white/10"
             >
-              <div className="px-2 py-2 space-y-1">
+              <div className="p-4 space-y-3">
                 {/* Mobile Search */}
-                <div className="px-3 py-2">
+                <div className="relative">
                   <input
                     type="text"
-                    placeholder="Search..."
-                    className="w-full px-3 py-1.5 rounded-lg bg-white/10 border border-white/20 
-                             text-white placeholder-white/50 text-sm focus:outline-none 
-                             focus:border-violet-400/60"
+                    placeholder="Search users..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 
+                             text-white placeholder-white/40 text-sm focus:outline-none 
+                             focus:border-violet-400/60 focus:bg-white/10 transition-all duration-200"
                   />
+                  <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/40" />
                 </div>
 
-                {/* Chat Link for Mobile */}
-                <motion.div whileHover={{ scale: 1.02, x: 4 }}>
-                  <Link
-                    href="/chat"
-                    onClick={() => setIsMenuOpen(false)}
-                    className={`
-                      flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium
-                      ${pathname === '/chat' 
-                        ? 'bg-violet-500/15 text-violet-300' 
-                        : 'text-white/70 hover:text-white hover:bg-white/10'}
-                    `}
-                  >
-                    <MessagesSquare className="w-4 h-4" />
-                    Messages
-                  </Link>
-                </motion.div>
-
-                {navItems.map((item) => (
+                {/* Mobile Navigation Items */}
+                {navItems.map((item, i) => (
                   <motion.div
                     key={item.name}
-                    whileHover={{ scale: 1.02, x: 4 }}
+                    custom={i}
+                    variants={itemVariants}
+                    initial="hidden"
+                    animate="visible"
                   >
                     <Link
                       href={item.href}
@@ -332,9 +419,10 @@ export default function Navbar() {
                         item.onClick?.(e);
                       }}
                       className={`
-                        flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium
+                        flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium
+                        transition-all duration-200
                         ${pathname === item.href 
-                          ? 'bg-violet-500/15 text-violet-300' 
+                          ? 'bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-violet-300' 
                           : 'text-white/70 hover:text-white hover:bg-white/10'}
                       `}
                     >
@@ -343,11 +431,26 @@ export default function Navbar() {
                     </Link>
                   </motion.div>
                 ))}
+
+                {/* Mobile Action Buttons */}
+                <div className="flex items-center gap-2 pt-2 border-t border-white/10">
+                  <Link
+                    href="/chat"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg 
+                             bg-violet-500/10 text-violet-300 hover:bg-violet-500/20
+                             transition-colors duration-200"
+                  >
+                    <MessagesSquare className="w-4 h-4" />
+                    Messages
+                  </Link>
+                  
+                </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.nav>
-    </div>
+      </nav>
+    </motion.div>
   );
 }
