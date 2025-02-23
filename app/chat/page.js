@@ -7,10 +7,9 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import ChatWindow from '@/components/chatWindow';
 import LoadingSpinner from '@/components/profile/LoadingSpinner';
 
-// Separate component for the chat content to wrap search params
 function ChatContent() {
   const { data: session, status } = useSession();
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser , setSelectedUser ] = useState(null);
   const [userList, setUserList] = useState([]);
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -24,7 +23,7 @@ function ChatContent() {
           if (response.ok) {
             const { users } = await response.json();
             if (users.length > 0) {
-              setSelectedUser(users[0]);
+              setSelectedUser (users[0]);
             }
           }
         } catch (error) {
@@ -32,7 +31,7 @@ function ChatContent() {
         }
       };
       
-      fetchUser();
+      fetchUser ();
     }
   }, [searchParams, session]);
 
@@ -55,15 +54,15 @@ function ChatContent() {
   }, [session]);
 
   const handleUserSelect = (user) => {
-    setSelectedUser(user);
+    setSelectedUser (user);
     router.push(`/chat?user=${user.email}`);
   };
 
   return (
     <div className="container mx-auto p-4 pt-24">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[calc(100vh-8rem)]">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-[calc(100vh-8rem)]">
         {/* Sidebar */}
-        <div className="md:col-span-1 bg-zinc-900/50 rounded-lg p-4 overflow-hidden flex flex-col">
+        <div className="md:col-span-1 bg-zinc-800 rounded-lg p-4 overflow-hidden flex flex-col">
           <h2 className="text-xl font-bold mb-4">Chats</h2>
           {status === "loading" ? (
             <div className="flex-1 flex items-center justify-center">
@@ -79,9 +78,9 @@ function ChatContent() {
                     key={user.email}
                     onClick={() => handleUserSelect(user)}
                     className={`p-3 rounded-lg mb-2 cursor-pointer transition duration-200 ${
-                      selectedUser?.email === user.email 
-                        ? 'bg-blue-600' 
-                        : 'hover:bg-zinc-800'
+                      selectedUser ?.email === user.email 
+                        ? 'bg-blue-600 text-white' 
+                        : 'hover:bg-zinc-700 text-gray-300'
                     }`}
                   >
                     {user.name} ({user.email})
@@ -93,7 +92,7 @@ function ChatContent() {
         </div>
 
         {/* Chat Area */}
-        <div className="md:col-span-2 bg-zinc-900/50 rounded-lg overflow-hidden flex flex-col h-full">
+        <div className="md:col-span-3 bg-zinc-900 rounded-lg overflow-hidden flex flex-col h-full">
           {status === "unauthenticated" ? (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
@@ -102,8 +101,8 @@ function ChatContent() {
               </div>
             </div>
           ) : (
-            selectedUser ? (
-              <ChatWindow selectedUser={selectedUser} />
+            selectedUser  ? (
+              <ChatWindow selectedUser ={selectedUser } />
             ) : (
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-center text-gray-400">
@@ -118,7 +117,6 @@ function ChatContent() {
   );
 }
 
-// Main page component
 export default function ChatPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-950 to-black text-white">

@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { string } from 'zod';
 
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -10,9 +9,9 @@ const UserSchema = new mongoose.Schema({
     leetcode: { type: String },
     codechef: { type: String },
     codeforces: { type: String },
-    geeksforgeeks: { type: String },
-    hackerrank: { type: String }, 
-    github :{type : String}
+    // geeksforgeeks: { type: String },
+    // hackerrank: { type: String }, 
+    // github :{type : String}
   },
   
   providers: [String],

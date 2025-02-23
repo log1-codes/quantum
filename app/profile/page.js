@@ -19,7 +19,7 @@ export default function ProfilePage() {
       leetcode: "",
       codechef: "",
       codeforces: "",
-      github:""
+      // github:""
     },
     
   }));
@@ -53,7 +53,7 @@ export default function ProfilePage() {
           leetcode: data.platforms?.leetcode || "",
           codechef: data.platforms?.codechef || "",
           codeforces: data.platforms?.codeforces || "",
-          github: data.platforms?.github|| ""
+          // github: data.platforms?.github|| ""
         },
        
       });
@@ -88,7 +88,7 @@ export default function ProfilePage() {
           leetcode: updatedData.platforms?.leetcode || prev.platforms.leetcode,
           codechef: updatedData.platforms?.codechef || prev.platforms.codechef,
           codeforces: updatedData.platforms?.codeforces || prev.platforms.codeforces,
-          github : updatedData.platforms?.github || prev.platforms.github
+          // github : updatedData.platforms?.github || prev.platforms.github
         },
        
       }));
@@ -208,7 +208,7 @@ export default function ProfilePage() {
                       }))}
                       placeholder="Enter CodeChef username"
                     />
-                    <InputField
+                    {/* <InputField
                       label="GIthub Username"
                       value={userData.platforms.github}
                       onChange={(e) => setUserData(prev => ({
@@ -216,7 +216,7 @@ export default function ProfilePage() {
                         platforms: { ...prev.platforms, github: e.target.value }
                       }))}
                       placeholder="Enter Github username"
-                    />
+                    /> */}
                 
                   </div>
                 ) : (
@@ -233,10 +233,10 @@ export default function ProfilePage() {
                       label="CodeChef"
                       value={userData.platforms.codechef || "Not set"}
                     />
-                    <DisplayField
+                    {/* <DisplayField
                       label="Github"
                       value={userData.platforms.github || "Not set"}
-                    />
+                    /> */}
                   </div>
                 )}
               </section>

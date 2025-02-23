@@ -11,10 +11,9 @@ export async function POST(request) {
   }
 
   try {
-    const { recipientEmail, content } = await request.json();
     const db = await connectDB();
     const messagesCollection = db.collection('messages');
-
+    const { senderEmail, senderName, senderImage, recipientEmail, content } = await request.json();
     const message = {
       senderEmail: session.user.email,
       senderName: session.user.name,

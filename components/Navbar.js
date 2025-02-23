@@ -134,14 +134,14 @@ export default function Navbar() {
 
   return (
     <motion.div 
-      className="fixed top-0 left-0 right-0 flex justify-center w-full z-50 px-4 pt-4 sm:pt-6"
+      className="fixed  top-0 left-0 right-0 flex justify-center w-full z-50 px-4 pt-4 sm:pt-6"
       variants={navVariants}
       initial="hidden"
       animate="visible"
     >
       <nav
         className={`
-          w-full max-w-7xl rounded-2xl
+          w-full max-w-7xl rounded-2xl  border border-gray-800 
           ${scrolled 
             ? 'bg-black/20 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/5' 
             : 'bg-black/10 backdrop-blur-sm'}

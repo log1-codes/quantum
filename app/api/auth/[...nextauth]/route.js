@@ -51,9 +51,9 @@ export const authOptions = {
           leetcode: "",
           codechef: "",
           codeforces: "",
-          geeksforgeeks: "",
-          hackerrank: "",
-          github:""
+          // geeksforgeeks: "",
+          // hackerrank: "",
+          // github:""
         },
         lastLogin: new Date(),
         createdAt: new Date()

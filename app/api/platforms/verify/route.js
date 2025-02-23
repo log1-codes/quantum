@@ -15,13 +15,13 @@ export async function POST(request) {
       case 'codeforces':
         isValid = await verifyCodeforces(username);
         break;
-      case 'geeksforgeeks':
-        isValid = await verifyGeeksforgeeks(username);
-        break;
+      // case 'geeksforgeeks':
+      //   isValid = await verifyGeeksforgeeks(username);
+      //   break;
 
-      case 'github':
-        isValid = await verifyGithub(username);
-        break; 
+      // case 'github':
+      //   isValid = await verifyGithub(username);
+      //   break; 
     }
 
     return NextResponse.json({ isValid });
