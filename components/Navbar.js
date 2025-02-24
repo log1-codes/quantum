@@ -1,28 +1,36 @@
 "use client";
 
-import { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
-import { useSession, signOut } from 'next-auth/react';
-import { 
-  Menu, X, Zap, Activity, Info, MessageCircle, 
-  User, LogOut, Search, MessagesSquare
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { debounce } from 'lodash';
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
+import {
+  Menu,
+  X,
+  Zap,
+  Activity,
+  Info,
+  MessageCircle,
+  User,
+  LogOut,
+  Search,
+  MessagesSquare,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { debounce } from "lodash";
 
 const navVariants = {
   hidden: { y: -100, opacity: 0 },
-  visible: { 
-    y: 0, 
+  visible: {
+    y: 0,
     opacity: 1,
-    transition: { 
+    transition: {
       type: "spring",
       stiffness: 100,
-      damping: 20
-    }
-  }
+      damping: 20,
+    },
+  },
 };
 
 const itemVariants = {
@@ -32,18 +40,18 @@ const itemVariants = {
     x: 0,
     transition: {
       delay: i * 0.1,
-      duration: 0.3
-    }
-  })
+      duration: 0.3,
+    },
+  }),
 };
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [scrolled, setScrolled] = useState(false);
   const searchRef = useRef(null);
   const pathname = usePathname();
@@ -66,18 +74,18 @@ export default function Navbar() {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setIsSearchOpen(false);
         setSearchResults([]);
-        setSearchQuery('');
+        setSearchQuery("");
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('resize', handleResize);
-    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleResize);
-      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+      document.removeEventListener("mousedown", handleClickOutside);
       handleResize.cancel();
     };
   }, []);
@@ -89,16 +97,16 @@ export default function Navbar() {
     }
 
     setIsLoading(true);
-    setError('');
-    
+    setError("");
+
     try {
       const response = await fetch(`/api/search?q=${query}`);
-      if (!response.ok) throw new Error('Search failed');
+      if (!response.ok) throw new Error("Search failed");
       const data = await response.json();
       setSearchResults(data.users);
     } catch (error) {
-      setError('Failed to search users');
-      console.error('Error searching users:', error);
+      setError("Failed to search users");
+      console.error("Error searching users:", error);
     } finally {
       setIsLoading(false);
     }
@@ -114,28 +122,41 @@ export default function Navbar() {
   const handleUserSelect = (user) => {
     setIsSearchOpen(false);
     setSearchResults([]);
-    setSearchQuery('');
+    setSearchQuery("");
     router.push(`/chat?user=${encodeURIComponent(user.email)}`);
   };
 
   const navItems = [
-    { name: 'Home', href: '/', icon: <Zap className="w-4 h-4" /> },
-    { name: 'Stats', href: '/stats', icon: <Activity className="w-4 h-4" /> },
-    { name: 'About', href: '/about', icon: <Info className="w-4 h-4" /> },
-    { name: 'Contact', href: '/contact', icon: <MessageCircle className="w-4 h-4" /> },
-    ...(session ? [
-      { name: 'Profile', href: '/profile', icon: <User className="w-4 h-4" /> },
-      { name: 'Logout', href: '#', icon: <LogOut className="w-4 h-4" />, onClick: () => signOut()
-        
-       }
-    ] : [
-      { name: 'Login', href: '/login' },
-      { name: 'Signup', href: '/signup' }
-    ])
+    { name: "Home", href: "/", icon: <Zap className="w-4 h-4" /> },
+    { name: "Stats", href: "/stats", icon: <Activity className="w-4 h-4" /> },
+    { name: "About", href: "/about", icon: <Info className="w-4 h-4" /> },
+    {
+      name: "Contact",
+      href: "/contact",
+      icon: <MessageCircle className="w-4 h-4" />,
+    },
+    ...(session
+      ? [
+          {
+            name: "Profile",
+            href: "/profile",
+            icon: <User className="w-4 h-4" />,
+          },
+          {
+            name: "Logout",
+            href: "#",
+            icon: <LogOut className="w-4 h-4" />,
+            onClick: () => signOut(),
+          },
+        ]
+      : [
+          { name: "Login", href: "/login" },
+          { name: "Signup", href: "/signup" },
+        ]),
   ];
 
   return (
-    <motion.div 
+    <motion.div
       className="fixed  top-0 left-0 right-0 flex justify-center w-full z-50 px-4 pt-4 sm:pt-6"
       variants={navVariants}
       initial="hidden"
@@ -144,16 +165,18 @@ export default function Navbar() {
       <nav
         className={`
           w-full max-w-7xl rounded-2xl  border border-gray-800 
-          ${scrolled 
-            ? 'bg-black/20 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/5' 
-            : 'bg-black/10 backdrop-blur-sm'}
+          ${
+            scrolled
+              ? "bg-black/20 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/5"
+              : "bg-black/10 backdrop-blur-sm"
+          }
           transition-all duration-500 ease-in-out
         `}
       >
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <motion.div 
+            <motion.div
               className="flex items-center"
               whileHover={{ scale: 1.02 }}
             >
@@ -189,9 +212,11 @@ export default function Navbar() {
                     className={`
                       flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
                       transition-all duration-200 ease-in-out
-                      ${pathname === item.href 
-                        ? 'bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-violet-300' 
-                        : 'text-white/70 hover:text-white hover:bg-white/10'}
+                      ${
+                        pathname === item.href
+                          ? "bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-violet-300"
+                          : "text-white/70 hover:text-white hover:bg-white/10"
+                      }
                     `}
                   >
                     {item.icon}
@@ -221,7 +246,7 @@ export default function Navbar() {
                                  focus:border-violet-400/60 focus:bg-white/10 transition-all duration-200"
                         autoFocus
                       />
-                      
+
                       {/* Search Results Dropdown */}
                       <AnimatePresence>
                         {(searchResults.length > 0 || isLoading || error) && (
@@ -236,14 +261,18 @@ export default function Navbar() {
                               <div className="px-4 py-2 text-white/70 text-sm flex items-center gap-2">
                                 <motion.div
                                   animate={{ rotate: 360 }}
-                                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                  transition={{
+                                    duration: 1,
+                                    repeat: Infinity,
+                                    ease: "linear",
+                                  }}
                                 >
                                   <Activity className="w-4 h-4" />
                                 </motion.div>
                                 Searching...
                               </div>
                             )}
-                            
+
                             {error && (
                               <div className="px-4 py-2 text-red-400 text-sm">
                                 {error}
@@ -269,14 +298,20 @@ export default function Navbar() {
                                     className="rounded-full"
                                   />
                                 ) : (
-                                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-400 to-fuchsia-500 
-                                                flex items-center justify-center text-white text-sm">
-                                    {user.name?.[0] || 'U'}
+                                  <div
+                                    className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-400 to-fuchsia-500 
+                                                flex items-center justify-center text-white text-sm"
+                                  >
+                                    {user.name?.[0] || "U"}
                                   </div>
                                 )}
                                 <div>
-                                  <div className="text-sm font-medium text-white">{user.name}</div>
-                                  <div className="text-xs text-white/50">{user.email}</div>
+                                  <div className="text-sm font-medium text-white">
+                                    {user.name}
+                                  </div>
+                                  <div className="text-xs text-white/50">
+                                    {user.email}
+                                  </div>
                                 </div>
                               </motion.div>
                             ))}
@@ -310,7 +345,11 @@ export default function Navbar() {
                         flex items-center justify-center p-2 rounded-lg
                         text-white/70 hover:text-white hover:bg-white/10
                         transition-colors duration-200
-                        ${pathname === '/chat' ? 'bg-violet-500/15 text-violet-300' : ''}
+                        ${
+                          pathname === "/chat"
+                            ? "bg-violet-500/15 text-violet-300"
+                            : ""
+                        }
                       `}
                     >
                       <MessagesSquare className="w-4 h-4" />
@@ -321,22 +360,22 @@ export default function Navbar() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="relative"
-                  >
-                 
-                  </motion.div>
+                  ></motion.div>
                 </div>
 
                 {/* User Profile */}
                 {session?.user && (
-                  <motion.div 
+                  <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     whileHover={{ scale: 1.05 }}
                     className="ml-2"
                   >
-                    <div className="h-9 w-9 rounded-lg overflow-hidden border border-violet-400/30 
+                    <div
+                      className="h-9 w-9 rounded-lg overflow-hidden border border-violet-400/30 
                                   hover:border-violet-400/60 transition-colors duration-200
-                                  hover:shadow-lg hover:shadow-violet-500/10">
+                                  hover:shadow-lg hover:shadow-violet-500/10"
+                    >
                       {session.user.image ? (
                         <Image
                           src={session.user.image}
@@ -346,9 +385,11 @@ export default function Navbar() {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="h-full w-full bg-gradient-to-br from-violet-400 to-fuchsia-500 
-                                      flex items-center justify-center text-white text-sm font-medium">
-                          {session.user.name?.[0] || 'U'}
+                        <div
+                          className="h-full w-full bg-gradient-to-br from-violet-400 to-fuchsia-500 
+                                      flex items-center justify-center text-white text-sm font-medium"
+                        >
+                          {session.user.name?.[0] || "U"}
                         </div>
                       )}
                     </div>
@@ -367,13 +408,17 @@ export default function Navbar() {
             >
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={isMenuOpen ? 'close' : 'menu'}
+                  key={isMenuOpen ? "close" : "menu"}
                   initial={{ opacity: 0, rotate: -90 }}
                   animate={{ opacity: 1, rotate: 0 }}
                   exit={{ opacity: 0, rotate: 90 }}
                   transition={{ duration: 0.2 }}
                 >
-                  {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                  {isMenuOpen ? (
+                    <X className="h-5 w-5" />
+                  ) : (
+                    <Menu className="h-5 w-5" />
+                  )}
                 </motion.div>
               </AnimatePresence>
             </motion.button>
@@ -385,7 +430,7 @@ export default function Navbar() {
           {isMenuOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
+              animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="md:hidden border-t border-white/10"
@@ -423,9 +468,11 @@ export default function Navbar() {
                       className={`
                         flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium
                         transition-all duration-200
-                        ${pathname === item.href 
-                          ? 'bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-violet-300' 
-                          : 'text-white/70 hover:text-white hover:bg-white/10'}
+                        ${
+                          pathname === item.href
+                            ? "bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-violet-300"
+                            : "text-white/70 hover:text-white hover:bg-white/10"
+                        }
                       `}
                     >
                       {item.icon}
@@ -446,7 +493,6 @@ export default function Navbar() {
                     <MessagesSquare className="w-4 h-4" />
                     Messages
                   </Link>
-                  
                 </div>
               </div>
             </motion.div>

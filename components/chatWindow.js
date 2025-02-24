@@ -1,11 +1,10 @@
 "use client";
-
 import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { Send, MessageSquare, Loader2, Smile, Pencil, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
+import EmojiPicker from 'emoji-picker-react';
 const REACTIONS = ["👍", "❤️", "😂", "😮", "😢", "🙏", "😭", "☠️", "🤷‍♂️", "🚀", "❌"];
 
 export default function ChatWindow({ selectedUser , onMessageReceived }) {
@@ -18,7 +17,9 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
   const [editingMessage, setEditingMessage] = useState(null);
   const [showReactions, setShowReactions] = useState(null);
   const [reactionPopupVisible, setReactionPopupVisible] = useState(false);
-
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false); 
+  const emojiPickerRef = useRef(null); 
+  const emojiButtonRef = useRef(null); 
   useEffect(() => {
     if (selectedUser ) {
       setMessages([]);
@@ -140,7 +141,7 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
   const handleReaction = async (messageId, reaction) => {
     setMessages((prevMessages) =>
       prevMessages.map((msg) =>
-        msg._id === messageId ? { ...msg, reactions: [reaction] } : msg // Allow only one reaction
+        msg._id === messageId ? { ...msg, reactions: [reaction] } : msg 
       )
     );
 
@@ -171,6 +172,14 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
       setShowReactions(null);
       setReactionPopupVisible(false);
     }
+    if (
+      emojiPickerRef.current && 
+      !emojiPickerRef.current.contains(event.target) && 
+      emojiButtonRef.current && 
+      !emojiButtonRef.current.contains(event.target)
+    ) {
+      setShowEmojiPicker(false); 
+    }
   };
 
   useEffect(() => {
@@ -180,6 +189,9 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
     };
   }, [showReactions]);
 
+  const handleEmojiClick = (emojiData) => {
+    setNewMessage((prev) => prev + emojiData.emoji); 
+  };
   return (
     <div className="flex flex-col h-full bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 border border-zinc-700/50 overflow-hidden rounded-2xl shadow-2xl relative">
       {/* Chat Header */}
@@ -418,6 +430,20 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
             placeholder="Type your message..."
             className="flex-1 p-3 bg-zinc-700/50 border border-zinc-600/50 rounded-xl text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-200"
           />
+           <button
+            type="button"
+            ref={emojiButtonRef}
+            onClick={() => setShowEmojiPicker((prev) => !prev)} 
+            className="p-3 bg-zinc-700 rounded-lg"
+          >
+            <Smile/>
+          </button>
+          {showEmojiPicker && (
+           
+            <div   ref={emojiPickerRef} className="absolute z-10" style={{ bottom: '100%', left: '0', transform: 'translateY(-8px)' }}> {/* Adjusted positioning */}
+              <EmojiPicker onEmojiClick={handleEmojiClick} /> 
+            </div>
+          )}
           <motion.button
             type="submit"
  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white rounded-xl transition-all duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"

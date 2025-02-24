@@ -99,7 +99,7 @@ function ChatContent() {
                 <h3 className="text-xl font-semibold mb-2">Please Sign In</h3>
                 <p className="text-gray-400">Sign in to access your chats</p>
               </div>
-            </div>
+            </div> 
           ) : (
             selectedUser  ? (
               <ChatWindow selectedUser ={selectedUser } />
