@@ -125,7 +125,9 @@ export default function Navbar() {
     { name: 'Contact', href: '/contact', icon: <MessageCircle className="w-4 h-4" /> },
     ...(session ? [
       { name: 'Profile', href: '/profile', icon: <User className="w-4 h-4" /> },
-      { name: 'Logout', href: '#', icon: <LogOut className="w-4 h-4" />, onClick: () => signOut() }
+      { name: 'Logout', href: '#', icon: <LogOut className="w-4 h-4" />, onClick: () => signOut()
+        
+       }
     ] : [
       { name: 'Login', href: '/login' },
       { name: 'Signup', href: '/signup' }

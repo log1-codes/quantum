@@ -44,7 +44,7 @@ export default function StatsPage() {
         <div className="bg-[#0a0a0a] rounded-lg p-6 relative overflow-hidden">
           <div className="flex items-center gap-2 relative z-10">
             <SiLeetcode className="text-[#FFA116] text-3xl" />
-            <h2 className="text-2xl font-bold text-white">LeetCode</h2>
+            <h2 className="text-2xl font-geist  text-white">LeetCode</h2>
           </div>
           <p className="text-gray-400 mt-4 relative z-10">
             No LeetCode stats available

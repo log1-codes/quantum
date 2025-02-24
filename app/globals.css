@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+body {
+    font-family: 'GeistSans', sans-serif; 
+}
+
+code {
+    font-family: 'GeistMono', monospace; 
+}
