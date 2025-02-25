@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Send, MessageSquare, Loader2, Smile, Pencil, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import EmojiPicker from 'emoji-picker-react';
-const REACTIONS = ["👍", "❤️", "😂", "😮", "😢", "🙏", "😭", "☠️", "🤷‍♂️", "🚀", "❌"];
+const REACTIONS = ["👍", "❤️", "😂", "😮", "🤬" , "😎" ,"😢", "🙏", "😭", "☠️", "🤷‍♂️", "🚀", "❌"];
 
 export default function ChatWindow({ selectedUser , onMessageReceived }) {
   const { data: session } = useSession();
