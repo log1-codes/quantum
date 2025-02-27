@@ -141,7 +141,7 @@ export default function Home() {
             </h2>
             
             <div className="flex justify-center gap-8 flex-wrap">
-              {['LeetCode', 'CodeChef', 'CodeForces'].map((platform, index) => (
+              {['LeetCode', 'CodeChef', 'CodeForces' , 'GeeksForGeeks'].map((platform, index) => (
                 <motion.div
                   key={platform}
                   initial={{ opacity: 0 }}

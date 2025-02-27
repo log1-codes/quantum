@@ -16,6 +16,16 @@ export async function PUT(request) {
 
     const data = await request.json();
 
+    if (!data.platforms) {
+      data.platforms = {};
+    }
+
+    Object.keys(data.platforms).forEach(platform => {
+      data.platforms[platform] = data.platforms[platform]?.trim() || '';
+    });
+
+    console.log("Updating user with data:", data);
+
     await connectDB();
     
     const updatedUser = await User.findOneAndUpdate(

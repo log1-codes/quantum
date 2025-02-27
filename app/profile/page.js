@@ -9,6 +9,7 @@ import { Edit2, Save, X, Camera, Code } from 'lucide-react';
 import { SiLeetcode } from "react-icons/si";
 import { SiCodeforces } from "react-icons/si";
 import { SiCodechef } from "react-icons/si";
+import { SiGeeksforgeeks } from "react-icons/si";
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -23,6 +24,7 @@ export default function ProfilePage() {
       leetcode: "",
       codechef: "",
       codeforces: "",
+      geeksforgeeks: "",
     },
   }));
 
@@ -55,6 +57,7 @@ export default function ProfilePage() {
           leetcode: data.platforms?.leetcode || "",
           codechef: data.platforms?.codechef || "",
           codeforces: data.platforms?.codeforces || "",
+          geeksforgeeks: data.platforms?.geeksforgeeks || "",
         },
       });
     } catch (error) {
@@ -88,6 +91,7 @@ export default function ProfilePage() {
           leetcode: updatedData.platforms?.leetcode || prev.platforms.leetcode,
           codechef: updatedData.platforms?.codechef || prev.platforms.codechef,
           codeforces: updatedData.platforms?.codeforces || prev.platforms.codeforces,
+          geeksforgeeks: updatedData.platforms?.geeksforgeeks || prev.platforms.geeksforgeeks,
         },
       }));
     } catch (error) {
@@ -134,7 +138,7 @@ export default function ProfilePage() {
                     <span className="text-4xl font-bold">{userData.name.charAt(0)}</span>
                   </div>
                 )}
-                
+
               </motion.div>
               {loading ? (
                 <div className="space-y-3 w-full flex flex-col items-center">
@@ -305,6 +309,15 @@ function EditForm({ userData, setUserData, handleUpdate, loading, cleanLeetCodeU
             }))}
             icon={<SiCodechef size={20} />}
           />
+          <InputField
+            label="GeeksForGeeks Username"
+            value={userData.platforms.geeksforgeeks}
+            onChange={(e) => setUserData(prev => ({
+              ...prev,
+              platforms: { ...prev.platforms, geeksforgeeks: e.target.value }
+            }))}
+            icon={<SiGeeksforgeeks size={20} />}
+          />
         </div>
       </motion.div>
       <motion.button
@@ -358,23 +371,29 @@ function DisplayInfo({ userData }) {
       >
         <h2 className="text-xl font-semibold mb-6 text-gradient">Coding Platforms</h2>
         <div className="space-y-5">
-          <DisplayField 
-            label="LeetCode" 
-            value={userData.platforms.leetcode || "Not set"} 
-            icon={<SiLeetcode size={20} />} 
+          <DisplayField
+            label="LeetCode"
+            value={userData.platforms.leetcode || "Not set"}
+            icon={<SiLeetcode size={20} />}
             link={userData.platforms.leetcode ? `https://leetcode.com/${userData.platforms.leetcode}` : null}
           />
-          <DisplayField 
-            label="CodeForces" 
-            value={userData.platforms.codeforces || "Not set"} 
+          <DisplayField
+            label="CodeForces"
+            value={userData.platforms.codeforces || "Not set"}
             icon={<SiCodeforces size={20} />}
             link={userData.platforms.codeforces ? `https://codeforces.com/profile/${userData.platforms.codeforces}` : null}
           />
-          <DisplayField 
-            label="CodeChef" 
-            value={userData.platforms.codechef || "Not set"} 
+          <DisplayField
+            label="CodeChef"
+            value={userData.platforms.codechef || "Not set"}
             icon={<SiCodechef size={20} />}
             link={userData.platforms.codechef ? `https://www.codechef.com/users/${userData.platforms.codechef}` : null}
+          />
+          <DisplayField
+            label="GeeksForGeeks"
+            value={userData.platforms.geeksforgeeks || "Not set"}
+            icon={<SiGeeksforgeeks size={20} />}
+            link={userData.platforms.geeksforgeeks ? `https://geeksforgeeks.org/user/${userData.platforms.geeksforgeeks}` : null}
           />
         </div>
       </motion.div>

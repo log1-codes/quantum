@@ -7,6 +7,8 @@ import { getLeetcodeStats } from "@/lib/platforms/leetcode";
 import { getCodechefStats } from "@/lib/platforms/codechef";
 import { getCodeforcesStats } from "@/lib/platforms/codeforces";
 import { getGithubStats } from "@/lib/platforms/github";
+import { getGeeksForGeeksStats } from "@/lib/platforms/geeksforgeeks";
+
 
 export async function GET() {
   try {
@@ -68,26 +70,28 @@ export async function GET() {
       console.log("No CodeChef username found in user data");
     }
 
-    let githubStats = null;
-    if (user.platforms?.github) {
+    let geeksforgeeksStats = null;
+    if (user.platforms?.geeksforgeeks) {
       try {
-        githubStats = await getGithubStats(user.platforms.github);
-        if (!githubStats) {
-          throw new Error("Failed to fetch GitHub Stats");
+        const response = await getGeeksForGeeksStats(user.platforms.geeksforgeeks);
+        if (response.success && response.data) {
+          geeksforgeeksStats = response.data;
+        } else {
+          throw new Error("Failed to fetch GeeksForGeeks stats");
         }
       } catch (error) {
-        console.log("GitHub Stats Error", error);
-        githubStats = { error: "Failed to fetch the GitHub Stats" };
+        console.error("GeeksForGeeks stats error:", error);
+        geeksforgeeksStats = { error: "Failed to fetch GeeksForGeeks stats" };
       }
     } else {
-      console.log("No GitHub username found in user data");
+      console.log("No GeeksForGeeks username found in user data");
     }
 
     return NextResponse.json({
       leetcode: leetcodeStats,
       codeforces: codeforcesStats,
       codechef: codechefStats,
-      github: githubStats,
+      geeksforgeeks: geeksforgeeksStats,
       platforms: user.platforms,
     });
   } catch (error) {

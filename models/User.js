@@ -9,11 +9,8 @@ const UserSchema = new mongoose.Schema({
     leetcode: { type: String },
     codechef: { type: String },
     codeforces: { type: String },
-    // geeksforgeeks: { type: String },
-    // hackerrank: { type: String }, 
-    // github :{type : String}
+    geeksforgeeks: { type: String }
   },
-  
   providers: [String],
   lastLogin: { type: Date, default: Date.now },
   createdAt: { type: Date, default: Date.now }

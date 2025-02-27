@@ -51,7 +51,7 @@ export const authOptions = {
           leetcode: "",
           codechef: "",
           codeforces: "",
-          // geeksforgeeks: "",
+          geeksforgeeks: "",
           // hackerrank: "",
           // github:""
         },

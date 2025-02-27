@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { SiLeetcode, SiCodeforces, SiCodechef } from "react-icons/si";
+import { SiLeetcode, SiCodeforces, SiCodechef , SiGeeksforgeeks } from "react-icons/si";
 export default function StatsPage() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -16,7 +16,7 @@ export default function StatsPage() {
       } catch (error) {
         console.error("Error fetching stats:", error);
       } finally {
-        setLoading(false);
+        setLoading(false); 
       }
     };
 
@@ -839,6 +839,193 @@ export default function StatsPage() {
       </div>
     );
   };
+  
+  const renderGeeksForGeeksStats = () => {
+    
+    if (!stats?.geeksforgeeks) {
+      return (
+        <div className="bg-[#111111] rounded-xl border border-zinc-800/50 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <SiGeeksforgeeks className="text-[#2F8D46] text-2xl" />
+              <h3 className="text-xl font-medium text-white">GeeksforGeeks</h3>
+            </div>
+          </div>
+          <div className="text-center py-8">
+            <p className="text-gray-400">GeeksforGeeks username not set or data unavailable</p>
+            <p className="text-sm text-gray-600 mt-2">
+              Please update your profile with your GeeksforGeeks username
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    const { userInfo, solvedStats } = stats.geeksforgeeks;
+
+    // Render the component only if we have valid data
+    if (!userInfo || !solvedStats) {
+      return (
+        <div className="bg-[#111111] rounded-xl border border-zinc-800/50 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <SiGeeksforgeeks className="text-[#2F8D46] text-2xl" />
+              <h3 className="text-xl font-medium text-white">GeeksforGeeks</h3>
+            </div>
+          </div>
+          <div className="text-center py-8">
+            <p className="text-gray-400">Error loading GeeksforGeeks data</p>
+          </div>
+        </div>
+      );
+    }
+
+    const {
+      fullName = 'N/A',
+      userName = 'N/A',
+      profilePicture = '',
+      institute = 'N/A',
+      instituteRank = 'N/A',
+      currentStreak = 0,
+      maxStreak = 0,
+      codingScore = 0,
+      monthlyScore = 0,
+      totalProblemsSolved = 0
+    } = userInfo;
+
+    const {
+      basic = 0,
+      easy = 0,
+      medium = 0,
+      hard = 0
+    } = solvedStats;
+
+    // Rest of the renderGeeksForGeeksStats function remains the same
+    const renderProgressCircle = (solved, total, color) => {
+      const percentage = total > 0 ? (solved / total) * 100 : 0;
+      return (
+        <div className="relative flex items-center justify-center w-24 h-24">
+          <svg className="w-full h-full" viewBox="0 0 100 100">
+            <circle
+              cx="50"
+              cy="50"
+              r="45"
+              fill="none"
+              stroke="#1a1a1a"
+              strokeWidth="10"
+            />
+            <circle
+              cx="50"
+              cy="50"
+              r="45"
+              fill="none"
+              stroke={color}
+              strokeWidth="10"
+              strokeDasharray={`${percentage * 2.83} ${283 - percentage * 2.83}`}
+              strokeDashoffset="70.75"
+              strokeLinecap="round"
+              transform="rotate(-90 50 50)"
+            />
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <p className="text-xl font-bold text-white">{solved}</p>
+          </div>
+        </div>
+      );
+    };
+
+    return (
+      <div className="bg-[#111111] rounded-xl border border-zinc-800/50 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <SiGeeksforgeeks className="text-[#2F8D46] text-3xl" />
+            <div>
+              <h3 className="text-xl font-medium text-white">{fullName}</h3>
+              <p className="text-sm text-gray-400">@{userName}</p>
+            </div>
+          </div>
+          {profilePicture && (
+            <img
+              src={profilePicture}
+              alt={userName}
+              className="w-12 h-12 rounded-full border-2 border-zinc-800"
+            />
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="space-y-4">
+            <div className="flex justify-between items-center p-3 rounded-lg bg-zinc-800/30">
+              <span className="text-gray-400">Coding Score</span>
+              <span className="text-green-400 font-medium">
+                {codingScore}
+              </span>
+            </div>
+            <div className="flex justify-between items-center p-3 rounded-lg bg-zinc-800/30">
+              <span className="text-gray-400">Monthly Score</span>
+              <span className="text-blue-400 font-medium">
+                {monthlyScore}
+              </span>
+            </div>
+            <div className="flex justify-between items-center p-3 rounded-lg bg-zinc-800/30">
+              <span className="text-gray-400">Current Streak</span>
+              <span className="text-yellow-400 font-medium">
+                {currentStreak} days
+              </span>
+            </div>
+            <div className="flex justify-between items-center p-3 rounded-lg bg-zinc-800/30">
+              <span className="text-gray-400">Max Streak</span>
+              <span className="text-orange-400 font-medium">
+                {maxStreak} days
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col items-center bg-zinc-800/30 rounded-lg p-4">
+              <h4 className="text-gray-400 mb-2">Institute</h4>
+              <p className="text-white text-center">{institute}</p>
+            </div>
+            <div className="flex flex-col items-center bg-zinc-800/30 rounded-lg p-4">
+              <h4 className="text-gray-400 mb-2">Institute Rank</h4>
+              <p className="text-white">#{instituteRank}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <h4 className="text-white font-medium mb-4">Problem Solving Stats</h4>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="flex flex-col items-center">
+              <h5 className="text-gray-400 mb-2">Basic</h5>
+              {renderProgressCircle(basic, 100, "#4CAF50")}
+            </div>
+            <div className="flex flex-col items-center">
+              <h5 className="text-gray-400 mb-2">Easy</h5>
+              {renderProgressCircle(easy, 100, "#2196F3")}
+            </div>
+            <div className="flex flex-col items-center">
+              <h5 className="text-gray-400 mb-2">Medium</h5>
+              {renderProgressCircle(medium, 100, "#FFC107")}
+            </div>
+            <div className="flex flex-col items-center">
+              <h5 className="text-gray-400 mb-2">Hard</h5>
+              {renderProgressCircle(hard, 100, "#F44336")}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 p-4 bg-zinc-800/30 rounded-lg">
+          <div className="flex items-center justify-between">
+            <span className="text-gray-400">Total Problems Solved</span>
+            <span className="text-2xl font-bold text-white">
+              {totalProblemsSolved}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-zinc-950 py-28">
@@ -853,9 +1040,11 @@ export default function StatsPage() {
           ) : session ? (
             <>
               {renderLeetCodeStats()}
-              {/* {renderGitHubStats()} */}
               {renderCodeforcesStats()}
               {renderCodeChefStats()}
+              {
+                renderGeeksForGeeksStats()
+              }
             </>
           ) : (
             renderLoginPrompt()
