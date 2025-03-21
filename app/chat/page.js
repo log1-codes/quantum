@@ -64,7 +64,7 @@ function ChatContent() {
     <div className="container mx-auto p-4 pt-24">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-[calc(100vh-8rem)]">
         {/* Sidebar for desktop only - hidden on mobile */}
-        <div className="hidden md:block md:col-span-1 bg-zinc-800/80 backdrop-blur-md rounded-lg p-4 overflow-hidden flex flex-col relative shadow-xl">
+        <div className=" md:block md:col-span-1 bg-zinc-800/80 backdrop-blur-md rounded-lg p-4 overflow-hidden flex flex-col relative shadow-xl">
           <h2 className="text-xl font-bold mb-4">Chats</h2>
 
           {/* Desktop Chat List */}
