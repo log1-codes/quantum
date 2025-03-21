@@ -193,7 +193,7 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
     setNewMessage((prev) => prev + emojiData.emoji); 
   };
   return (
-    <div className="flex flex-col h-full bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 border border-zinc-700/50 overflow-hidden rounded-2xl shadow-2xl relative">
+    <div className="flex flex-col h-full bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 border border-zinc-700/50 overflow-hidden rounded-2xl shadow-2xl relative z-10">
       {/* Chat Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}

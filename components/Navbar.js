@@ -6,8 +6,6 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import {
-  Menu,
-  X,
   Zap,
   Activity,
   Info,
@@ -16,6 +14,8 @@ import {
   LogOut,
   Search,
   MessagesSquare,
+  Menu,
+  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { debounce } from "lodash";
@@ -45,15 +45,35 @@ const itemVariants = {
   }),
 };
 
+const mobileMenuVariants = {
+  closed: {
+    opacity: 0,
+    scale: 0.95,
+    y: -20,
+    transition: {
+      duration: 0.2,
+    },
+  },
+  open: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      duration: 0.2,
+    },
+  },
+};
+
 export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const searchRef = useRef(null);
+  const mobileMenuRef = useRef(null);
   const pathname = usePathname();
   const router = useRouter();
   const { data: session } = useSession();
@@ -64,31 +84,49 @@ export default function Navbar() {
       setScrolled(window.scrollY > scrollThreshold);
     };
 
-    const handleResize = debounce(() => {
-      if (window.innerWidth >= 768) {
-        setIsMenuOpen(false);
-      }
-    }, 100);
-
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setIsSearchOpen(false);
         setSearchResults([]);
         setSearchQuery("");
       }
+
+      if (
+        mobileMenuRef.current && 
+        !mobileMenuRef.current.contains(event.target) &&
+        !event.target.closest('[data-mobile-menu-toggle]')
+      ) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    // Close mobile menu on route change
+    const handleRouteChange = () => {
+      setMobileMenuOpen(false);
     };
 
     window.addEventListener("scroll", handleScroll);
-    window.addEventListener("resize", handleResize);
     document.addEventListener("mousedown", handleClickOutside);
+    router.events?.on("routeChangeComplete", handleRouteChange);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
       document.removeEventListener("mousedown", handleClickOutside);
-      handleResize.cancel();
+      router.events?.off("routeChangeComplete", handleRouteChange);
     };
-  }, []);
+  }, [router]);
+
+  // Close mobile menu when switching from mobile to desktop view
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768 && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [mobileMenuOpen]);
 
   const searchUsers = async (query) => {
     if (!query.trim()) {
@@ -150,21 +188,21 @@ export default function Navbar() {
           },
         ]
       : [
-          { name: "Login", href: "/login" },
-          { name: "Signup", href: "/signup" },
+          { name: "Login", href: "/login", icon: <User className="w-4 h-4" /> },
+          { name: "Signup", href: "/signup", icon: <User className="w-4 h-4" /> },
         ]),
   ];
 
   return (
     <motion.div
-      className="fixed  top-0 left-0 right-0 flex justify-center w-full z-50 px-4 pt-4 sm:pt-6"
+      className="fixed top-0 left-0 right-0 flex justify-center w-full z-50 px-4 pt-4 sm:pt-6"
       variants={navVariants}
       initial="hidden"
       animate="visible"
     >
       <nav
         className={`
-          w-full max-w-7xl rounded-2xl  border border-gray-800 
+          w-full max-w-7xl rounded-2xl border border-gray-800 
           ${
             scrolled
               ? "bg-black/20 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/5"
@@ -194,7 +232,7 @@ export default function Navbar() {
               </Link>
             </motion.div>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Navigation - Hidden on mobile */}
             <div className="hidden md:flex items-center gap-3">
               {navItems.map((item, i) => (
                 <motion.div
@@ -355,12 +393,6 @@ export default function Navbar() {
                       <MessagesSquare className="w-4 h-4" />
                     </Link>
                   </motion.div>
-
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="relative"
-                  ></motion.div>
                 </div>
 
                 {/* User Profile */}
@@ -398,76 +430,227 @@ export default function Navbar() {
               </div>
             </div>
 
-            {/* Mobile Menu Button */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10
+            {/* Mobile Navigation Controls */}
+            <div className="flex items-center gap-2 md:hidden">
+              {/* Mobile Search Button */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                className="p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10
                          transition-colors duration-200"
-            >
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={isMenuOpen ? "close" : "menu"}
-                  initial={{ opacity: 0, rotate: -90 }}
-                  animate={{ opacity: 1, rotate: 0 }}
-                  exit={{ opacity: 0, rotate: 90 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {isMenuOpen ? (
-                    <X className="h-5 w-5" />
-                  ) : (
-                    <Menu className="h-5 w-5" />
-                  )}
-                </motion.div>
+              >
+                <Search className="w-4 h-4" />
+              </motion.button>
+
+              {/* Mobile Search Input */}
+              <AnimatePresence>
+                {isSearchOpen && (
+                  <motion.div
+                    initial={{ width: 0, opacity: 0 }}
+                    animate={{ width: "100%", opacity: 1 }}
+                    exit={{ width: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-16 left-0 right-0 px-4 z-50"
+                    ref={searchRef}
+                  >
+                    <div className="relative w-full">
+                      <input
+                        type="text"
+                        placeholder="Search users..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full px-4 py-3 rounded-lg bg-black/40 backdrop-blur-xl 
+                                border border-white/10 text-white placeholder-white/40 text-sm 
+                                focus:outline-none focus:border-violet-400/60 shadow-lg"
+                        autoFocus
+                      />
+
+                      {/* Mobile Search Results Dropdown */}
+                      <AnimatePresence>
+                        {(searchResults.length > 0 || isLoading || error) && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="absolute top-full left-0 w-full mt-2 py-2 bg-black/80 backdrop-blur-xl 
+                                    border border-white/10 rounded-lg shadow-xl max-h-60 overflow-y-auto"
+                          >
+                            {isLoading && (
+                              <div className="px-4 py-2 text-white/70 text-sm flex items-center gap-2">
+                                <motion.div
+                                  animate={{ rotate: 360 }}
+                                  transition={{
+                                    duration: 1,
+                                    repeat: Infinity,
+                                    ease: "linear",
+                                  }}
+                                >
+                                  <Activity className="w-4 h-4" />
+                                </motion.div>
+                                Searching...
+                              </div>
+                            )}
+
+                            {error && (
+                              <div className="px-4 py-2 text-red-400 text-sm">
+                                {error}
+                              </div>
+                            )}
+
+                            {searchResults.map((user, i) => (
+                              <motion.div
+                                key={user._id}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: i * 0.1 }}
+                                onClick={() => handleUserSelect(user)}
+                                className="px-4 py-3 hover:bg-white/10 cursor-pointer flex items-center gap-3
+                                        transition-colors duration-200"
+                              >
+                                {user.image ? (
+                                  <Image
+                                    src={user.image}
+                                    alt={user.name}
+                                    width={32}
+                                    height={32}
+                                    className="rounded-full"
+                                  />
+                                ) : (
+                                  <div
+                                    className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-400 to-fuchsia-500 
+                                              flex items-center justify-center text-white text-sm"
+                                  >
+                                    {user.name?.[0] || "U"}
+                                  </div>
+                                )}
+                                <div>
+                                  <div className="text-sm font-medium text-white">
+                                    {user.name}
+                                  </div>
+                                  <div className="text-xs text-white/50">
+                                    {user.email}
+                                  </div>
+                                </div>
+                              </motion.div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </motion.div>
+                )}
               </AnimatePresence>
-            </motion.button>
+
+              {/* Mobile Chat Link */}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative"
+              >
+                <Link
+                  href="/chat"
+                  className={`
+                    flex items-center justify-center p-2 rounded-lg
+                    text-white/70 hover:text-white hover:bg-white/10
+                    transition-colors duration-200
+                    ${
+                      pathname === "/chat"
+                        ? "bg-violet-500/15 text-violet-300"
+                        : ""
+                    }
+                  `}
+                >
+                  <MessagesSquare className="w-4 h-4" />
+                </Link>
+              </motion.div>
+
+              {/* User Profile (Mobile) */}
+              {session?.user && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div
+                    className="h-8 w-8 rounded-lg overflow-hidden border border-violet-400/30 
+                              hover:border-violet-400/60 transition-colors duration-200"
+                  >
+                    {session.user.image ? (
+                      <Image
+                        src={session.user.image}
+                        alt="Profile"
+                        width={32}
+                        height={32}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div
+                        className="h-full w-full bg-gradient-to-br from-violet-400 to-fuchsia-500 
+                                  flex items-center justify-center text-white text-sm font-medium"
+                      >
+                        {session.user.name?.[0] || "U"}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Mobile Menu Toggle Button */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10
+                         transition-colors duration-200 ml-1"
+                data-mobile-menu-toggle="true"
+              >
+                {mobileMenuOpen ? (
+                  <X className="w-5 h-5" />
+                ) : (
+                  <Menu className="w-5 h-5" />
+                )}
+              </motion.button>
+            </div>
           </div>
         </div>
 
         {/* Mobile Menu */}
         <AnimatePresence>
-          {isMenuOpen && (
+          {mobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="md:hidden border-t border-white/10"
+              ref={mobileMenuRef}
+              variants={mobileMenuVariants}
+              initial="closed"
+              animate="open"
+              exit="closed"
+              className="md:hidden py-2 px-4 bg-black/30 backdrop-blur-xl rounded-b-2xl border-t border-white/5"
             >
-              <div className="p-4 space-y-3">
-                {/* Mobile Search */}
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search users..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 
-                             text-white placeholder-white/40 text-sm focus:outline-none 
-                             focus:border-violet-400/60 focus:bg-white/10 transition-all duration-200"
-                  />
-                  <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/40" />
-                </div>
-
-                {/* Mobile Navigation Items */}
+              <div className="space-y-1">
                 {navItems.map((item, i) => (
                   <motion.div
                     key={item.name}
-                    custom={i}
-                    variants={itemVariants}
-                    initial="hidden"
-                    animate="visible"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ 
+                      opacity: 1, 
+                      y: 0,
+                      transition: {
+                        delay: i * 0.05,
+                      },
+                    }}
                   >
                     <Link
                       href={item.href}
                       onClick={(e) => {
-                        setIsMenuOpen(false);
-                        item.onClick?.(e);
+                        setMobileMenuOpen(false);
+                        if (item.onClick) {
+                          e.preventDefault();
+                          item.onClick();
+                        }
                       }}
                       className={`
-                        flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium
-                        transition-all duration-200
+                        flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium
+                        transition-all duration-200 ease-in-out
                         ${
                           pathname === item.href
                             ? "bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-violet-300"
@@ -475,25 +658,13 @@ export default function Navbar() {
                         }
                       `}
                     >
-                      {item.icon}
+                      <span className="w-5 h-5 flex items-center justify-center">
+                        {item.icon}
+                      </span>
                       {item.name}
                     </Link>
                   </motion.div>
                 ))}
-
-                {/* Mobile Action Buttons */}
-                <div className="flex items-center gap-2 pt-2 border-t border-white/10">
-                  <Link
-                    href="/chat"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg 
-                             bg-violet-500/10 text-violet-300 hover:bg-violet-500/20
-                             transition-colors duration-200"
-                  >
-                    <MessagesSquare className="w-4 h-4" />
-                    Messages
-                  </Link>
-                </div>
               </div>
             </motion.div>
           )}
