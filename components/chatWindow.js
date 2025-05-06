@@ -223,14 +223,7 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
 
       {/* Messages Area */}
       <div
-        className="flex-1 overflow-y-auto p-4 space-y-4 relative"
-        style={{
-          backgroundImage: 'radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%)',
-          backgroundSize: '200% 200%',
-          backgroundPosition: 'center',
-          animation: 'pulse 15s infinite'
-        }}
-      >
+  className="flex-1 overflow-y-auto p-4 space-y-4 relative bg-zinc-800">
         {isLoading ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -446,10 +439,10 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
           )}
           <motion.button
             type="submit"
- className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white rounded-xl transition-all duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+ className="px-4  py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white rounded-xl transition-all duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
             disabled={!newMessage.trim()}
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-4 h-4 " />
             <span className="hidden sm:inline">Send</span>
           </motion.button>
         </form>

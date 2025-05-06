@@ -6,11 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "install": "npm ci --omit=dev"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.7.4",
     "@emailjs/browser": "^4.4.1",
+    "@emoji-mart/data": "^1.2.1",
+    "@emoji-mart/react": "^1.1.1",
     "@hookform/resolvers": "^3.9.1",
     "bcryptjs": "^2.4.3",
     "chart.js": "^4.4.7",

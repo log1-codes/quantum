@@ -12,7 +12,9 @@ const nextConfig = {
           hostname: 'avatars.githubusercontent.com',
         },
       ],
+      
     },
+    output :"standalone"
   }
   
   export default nextConfig;
