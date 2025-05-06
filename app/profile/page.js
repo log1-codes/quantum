@@ -10,6 +10,7 @@ import { SiLeetcode } from "react-icons/si";
 import { SiCodeforces } from "react-icons/si";
 import { SiCodechef } from "react-icons/si";
 import { SiGeeksforgeeks } from "react-icons/si";
+
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -110,133 +111,136 @@ export default function ProfilePage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-zinc-950 to-black text-white flex items-center justify-center p-4 sm:p-8">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(29,78,216,0.15),transparent_50%)]" />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-4xl relative z-10"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Profile Card */}
-          <motion.div
-            className="col-span-1 bg-zinc-900/50 backdrop-blur-lg rounded-3xl shadow-xl overflow-hidden border border-zinc-800/50"
-            whileHover={{ y: -5, boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)" }}
-          >
-            <div className="p-6 flex flex-col items-center">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="relative mb-4"
-              >
-                {loading ? (
-                  <div className="w-32 h-32 rounded-full bg-zinc-800 animate-pulse" />
-                ) : userData.image ? (
-                  <img src={userData.image} alt="User Profile" className="w-32 h-32 rounded-full object-cover border-4 border-blue-500/50 transition-all duration-300 hover:border-blue-500" />
-                ) : (
-                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center border-4 border-blue-500/50">
-                    <span className="text-4xl font-bold">{userData.name.charAt(0)}</span>
-                  </div>
-                )}
-
-              </motion.div>
-              {loading ? (
-                <div className="space-y-3 w-full flex flex-col items-center">
-                  <div className="h-8 w-48 bg-zinc-800 rounded-lg animate-pulse" />
-                  <div className="h-4 w-32 bg-zinc-800 rounded animate-pulse" />
-                </div>
-              ) : (
-                <>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
-                    {userData.name || "Your Name"}
-                  </h1>
-                  <p className="text-zinc-400 mt-2">@{userData.username || "username"}</p>
-                </>
-              )}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => !loading && setIsEditing(!isEditing)}
-                disabled={loading}
-                className="mt-6 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg font-medium text-white 
-                  hover:from-blue-500 hover:to-blue-600 transition-all duration-300 flex items-center gap-2 
-                  disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/20"
-              >
-                {isEditing ? (
-                  <>
-                    <X size={16} /> Cancel
-                  </>
-                ) : (
-                  <>
-                    <Edit2 size={16} /> Edit Profile
-                  </>
-                )}
-              </motion.button>
-            </div>
-          </motion.div>
-
-          {/* Info Cards */}
-          <div className="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <AnimatePresence mode="wait">
-              {loading ? (
-                <>
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className="col-span-1 sm:col-span-2 bg-zinc-900/50 backdrop-blur-lg rounded-3xl shadow-xl p-6 border border-zinc-800/50"
-                  >
-                    <div className="h-7 w-40 bg-zinc-800 rounded-lg animate-pulse mb-6" />
-                    <div className="space-y-6">
-                      {[1, 2, 3].map((i) => (
-                        <div key={i} className="space-y-2">
-                          <div className="h-4 w-24 bg-zinc-800 rounded animate-pulse" />
-                          <div className="h-6 w-full bg-zinc-800 rounded-lg animate-pulse" />
-                        </div>
-                      ))}
+    <main className="min-h-screen bg-gradient-to-b from-zinc-950 to-black text-white pt-20">
+      {/* Add padding to top (pt-20) to account for navbar height */}
+      <div className="flex items-center justify-center p-4 sm:p-8">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(29,78,216,0.15),transparent_50%)]" />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-4xl relative z-10"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Profile Card */}
+            <motion.div
+              className="col-span-1 bg-zinc-900/50 backdrop-blur-lg rounded-3xl shadow-xl overflow-hidden border border-zinc-800/50"
+              whileHover={{ y: -5, boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)" }}
+            >
+              <div className="p-6 flex flex-col items-center">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="relative mb-4"
+                >
+                  {loading ? (
+                    <div className="w-32 h-32 rounded-full bg-zinc-800 animate-pulse" />
+                  ) : userData.image ? (
+                    <img src={userData.image} alt="User Profile" className="w-32 h-32 rounded-full object-cover border-4 border-blue-500/50 transition-all duration-300 hover:border-blue-500" />
+                  ) : (
+                    <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center border-4 border-blue-500/50">
+                      <span className="text-4xl font-bold">{userData.name.charAt(0)}</span>
                     </div>
-                  </motion.div>
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3, delay: 0.1 }}
-                    className="col-span-1 sm:col-span-2 bg-zinc-900/50 backdrop-blur-lg rounded-3xl shadow-xl p-6 border border-zinc-800/50"
-                  >
-                    <div className="h-7 w-48 bg-zinc-800 rounded-lg animate-pulse mb-6" />
-                    <div className="space-y-6">
-                      {[1, 2, 3].map((i) => (
-                        <div key={i} className="flex items-center space-x-3">
-                          <div className="h-6 w-6 bg-zinc-800 rounded-full animate-pulse" />
-                          <div className="space-y-2 flex-1">
-                            <div className="h-4 w-32 bg-zinc-800 rounded animate-pulse" />
+                  )}
+
+                </motion.div>
+                {loading ? (
+                  <div className="space-y-3 w-full flex flex-col items-center">
+                    <div className="h-8 w-48 bg-zinc-800 rounded-lg animate-pulse" />
+                    <div className="h-4 w-32 bg-zinc-800 rounded animate-pulse" />
+                  </div>
+                ) : (
+                  <>
+                    <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+                      {userData.name || "Your Name"}
+                    </h1>
+                    <p className="text-zinc-400 mt-2">@{userData.username || "username"}</p>
+                  </>
+                )}
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => !loading && setIsEditing(!isEditing)}
+                  disabled={loading}
+                  className="mt-6 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg font-medium text-white 
+                    hover:from-blue-500 hover:to-blue-600 transition-all duration-300 flex items-center gap-2 
+                    disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/20"
+                >
+                  {isEditing ? (
+                    <>
+                      <X size={16} /> Cancel
+                    </>
+                  ) : (
+                    <>
+                      <Edit2 size={16} /> Edit Profile
+                    </>
+                  )}
+                </motion.button>
+              </div>
+            </motion.div>
+
+            {/* Info Cards */}
+            <div className="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <AnimatePresence mode="wait">
+                {loading ? (
+                  <>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.3 }}
+                      className="col-span-1 sm:col-span-2 bg-zinc-900/50 backdrop-blur-lg rounded-3xl shadow-xl p-6 border border-zinc-800/50"
+                    >
+                      <div className="h-7 w-40 bg-zinc-800 rounded-lg animate-pulse mb-6" />
+                      <div className="space-y-6">
+                        {[1, 2, 3].map((i) => (
+                          <div key={i} className="space-y-2">
+                            <div className="h-4 w-24 bg-zinc-800 rounded animate-pulse" />
                             <div className="h-6 w-full bg-zinc-800 rounded-lg animate-pulse" />
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                </>
-              ) : isEditing ? (
-                <EditForm
-                  key="edit-form"
-                  userData={userData}
-                  setUserData={setUserData}
-                  handleUpdate={handleUpdate}
-                  loading={loading}
-                  cleanLeetCodeUsername={cleanLeetCodeUsername}
-                />
-              ) : (
-                <DisplayInfo
-                  key="display-info"
-                  userData={userData}
-                />
-              )}
-            </AnimatePresence>
+                        ))}
+                      </div>
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.3, delay: 0.1 }}
+                      className="col-span-1 sm:col-span-2 bg-zinc-900/50 backdrop-blur-lg rounded-3xl shadow-xl p-6 border border-zinc-800/50"
+                    >
+                      <div className="h-7 w-48 bg-zinc-800 rounded-lg animate-pulse mb-6" />
+                      <div className="space-y-6">
+                        {[1, 2, 3].map((i) => (
+                          <div key={i} className="flex items-center space-x-3">
+                            <div className="h-6 w-6 bg-zinc-800 rounded-full animate-pulse" />
+                            <div className="space-y-2 flex-1">
+                              <div className="h-4 w-32 bg-zinc-800 rounded animate-pulse" />
+                              <div className="h-6 w-full bg-zinc-800 rounded-lg animate-pulse" />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  </>
+                ) : isEditing ? (
+                  <EditForm
+                    key="edit-form"
+                    userData={userData}
+                    setUserData={setUserData}
+                    handleUpdate={handleUpdate}
+                    loading={loading}
+                    cleanLeetCodeUsername={cleanLeetCodeUsername}
+                  />
+                ) : (
+                  <DisplayInfo
+                    key="display-info"
+                    userData={userData}
+                  />
+                )}
+              </AnimatePresence>
+            </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </main>
   );
 }
