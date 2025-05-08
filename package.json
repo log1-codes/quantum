@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "install": "npm ci --omit=dev"
+    "install": "npm install"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.7.4",
