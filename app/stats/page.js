@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { SiLeetcode, SiCodeforces, SiCodechef , SiGeeksforgeeks } from "react-icons/si";
+
 export default function StatsPage() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -148,7 +149,7 @@ export default function StatsPage() {
         (a, b) => a + b,
         0
       );
-
+      
       return (
         <div className="mt-8">
           <div className="flex items-center justify-between mb-4">
