@@ -92,7 +92,7 @@ export default function Navbar() {
       }
 
       if (
-        mobileMenuRef.current && 
+        mobileMenuRef.current &&
         !mobileMenuRef.current.contains(event.target) &&
         !event.target.closest('[data-mobile-menu-toggle]')
       ) {
@@ -175,22 +175,22 @@ export default function Navbar() {
     },
     ...(session
       ? [
-          {
-            name: "Profile",
-            href: "/profile",
-            icon: <User className="w-4 h-4" />,
-          },
-          {
-            name: "Logout",
-            href: "#",
-            icon: <LogOut className="w-4 h-4" />,
-            onClick: () => signOut(),
-          },
-        ]
+        {
+          name: "Profile",
+          href: "/profile",
+          icon: <User className="w-4 h-4" />,
+        },
+        {
+          name: "Logout",
+          href: "#",
+          icon: <LogOut className="w-4 h-4" />,
+          onClick: () => signOut(),
+        },
+      ]
       : [
-          { name: "Login", href: "/login", icon: <User className="w-4 h-4" /> },
-          { name: "Signup", href: "/signup", icon: <User className="w-4 h-4" /> },
-        ]),
+        { name: "Login", href: "/login", icon: <User className="w-4 h-4" /> },
+        { name: "Signup", href: "/signup", icon: <User className="w-4 h-4" /> },
+      ]),
   ];
 
   return (
@@ -203,10 +203,9 @@ export default function Navbar() {
       <nav
         className={`
           w-full max-w-7xl rounded-2xl border border-gray-800 
-          ${
-            scrolled
-              ? "bg-black/20 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/5"
-              : "bg-black/10 backdrop-blur-sm"
+          ${scrolled
+            ? "bg-black/20 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/5"
+            : "bg-black/10 backdrop-blur-sm"
           }
           transition-all duration-500 ease-in-out
         `}
@@ -226,9 +225,16 @@ export default function Navbar() {
                 >
                   <Zap className="h-5 w-5 text-violet-400" />
                 </motion.div>
-                <span className="text-xl font-semibold font-mono tracking-tight text-white">
-                  quantum
-                </span>
+                <div className="relative inline-block pb-2 pr-4">
+                  <span className="text-xl font-semibold font-mono tracking-tight text-white block">
+                    quantum
+                  </span>
+                  <span className="absolute right-0 bottom-0 text-xs text-violet-300 font-mono">
+                    v1.1
+                  </span>
+                </div>
+
+
               </Link>
             </motion.div>
 
@@ -250,10 +256,9 @@ export default function Navbar() {
                     className={`
                       flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
                       transition-all duration-200 ease-in-out
-                      ${
-                        pathname === item.href
-                          ? "bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-violet-300"
-                          : "text-white/70 hover:text-white hover:bg-white/10"
+                      ${pathname === item.href
+                        ? "bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-violet-300"
+                        : "text-white/70 hover:text-white hover:bg-white/10"
                       }
                     `}
                   >
@@ -383,10 +388,9 @@ export default function Navbar() {
                         flex items-center justify-center p-2 rounded-lg
                         text-white/70 hover:text-white hover:bg-white/10
                         transition-colors duration-200
-                        ${
-                          pathname === "/chat"
-                            ? "bg-violet-500/15 text-violet-300"
-                            : ""
+                        ${pathname === "/chat"
+                          ? "bg-violet-500/15 text-violet-300"
+                          : ""
                         }
                       `}
                     >
@@ -554,10 +558,9 @@ export default function Navbar() {
                     flex items-center justify-center p-2 rounded-lg
                     text-white/70 hover:text-white hover:bg-white/10
                     transition-colors duration-200
-                    ${
-                      pathname === "/chat"
-                        ? "bg-violet-500/15 text-violet-300"
-                        : ""
+                    ${pathname === "/chat"
+                      ? "bg-violet-500/15 text-violet-300"
+                      : ""
                     }
                   `}
                 >
@@ -631,8 +634,8 @@ export default function Navbar() {
                   <motion.div
                     key={item.name}
                     initial={{ opacity: 0, y: -10 }}
-                    animate={{ 
-                      opacity: 1, 
+                    animate={{
+                      opacity: 1,
                       y: 0,
                       transition: {
                         delay: i * 0.05,
@@ -651,10 +654,9 @@ export default function Navbar() {
                       className={`
                         flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium
                         transition-all duration-200 ease-in-out
-                        ${
-                          pathname === item.href
-                            ? "bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-violet-300"
-                            : "text-white/70 hover:text-white hover:bg-white/10"
+                        ${pathname === item.href
+                          ? "bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-violet-300"
+                          : "text-white/70 hover:text-white hover:bg-white/10"
                         }
                       `}
                     >
