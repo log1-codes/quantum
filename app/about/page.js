@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { motion } from "framer-motion";
 import { Code2, Target, Clock, Users, ArrowRight, Github } from "lucide-react";
 
@@ -7,37 +7,39 @@ export default function AboutPage() {
     {
       icon: <Code2 className="w-6 h-6" />,
       title: "Multi-Platform Integration",
-      description: "Seamlessly aggregates your profiles from LeetCode, CodeForces, CodeChef, and more in one unified dashboard."
+      description: "Seamlessly aggregates your profiles from LeetCode, CodeForces, CodeChef, and more in one unified dashboard.",
     },
     {
       icon: <Clock className="w-6 h-6" />,
       title: "Real-Time Updates",
-      description: "Stay updated with your latest submissions, contest ratings, and problem-solving progress across all platforms."
+      description: "Stay updated with your latest submissions, contest ratings, and problem-solving progress across all platforms.",
     },
     {
       icon: <Target className="w-6 h-6" />,
       title: "Performance Analytics",
-      description: "Get detailed insights into your coding journey with visual analytics and progress tracking."
+      description: "Get detailed insights into your coding journey with visual analytics and progress tracking.",
     },
     {
       icon: <Users className="w-6 h-6" />,
       title: "Community Features",
-      description: "Connect with fellow developers, share achievements, and build your coding network."
-    }
+      description: "Connect with fellow developers, share achievements, and build your coding network.",
+    },
   ];
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-zinc-950 to-black text-white">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(29,78,216,0.15),transparent_50%)]" />
-      
+    <main className="min-h-screen bg-gradient-to-b from-zinc-950 to-black text-white relative">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(234,179,8,0.1),transparent_50%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(234,179,8,0.05),transparent_70%)] pointer-events-none" />
+
       <div className="max-w-6xl mx-auto px-4 py-20 relative z-10">
+        {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h1 className="py-10 text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+          <h1 className="py-10 text-5xl font-bold mb-6 bg-gradient-to-r from-orange-500 to-yellow-400 bg-clip-text text-transparent">
             Your Coding Journey, Unified
           </h1>
           <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
@@ -46,6 +48,7 @@ export default function AboutPage() {
           </p>
         </motion.div>
 
+        {/* Features Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -58,10 +61,10 @@ export default function AboutPage() {
               initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-              className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-6 hover:bg-zinc-800/50 transition-all duration-300"
+              className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-6 hover:bg-zinc-800/50 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               <div className="flex items-center gap-4 mb-4">
-                <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400">
+                <div className="p-2 bg-orange-500/10 rounded-lg text-orange-400">
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-semibold">{feature.title}</h3>
@@ -71,13 +74,16 @@ export default function AboutPage() {
           ))}
         </motion.div>
 
+        {/* Why Choose Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-8 text-center"
+          className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-8 text-center shadow-lg"
         >
-          <h2 className="text-3xl font-bold mb-6">Why Choose Our Platform?</h2>
+          <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-orange-500 to-yellow-400 bg-clip-text text-transparent">
+            Why Choose Our Platform?
+          </h2>
           <div className="text-lg text-zinc-400 space-y-4">
             <p>
               In the competitive programming world, tracking your progress across multiple platforms
@@ -89,12 +95,12 @@ export default function AboutPage() {
               or just improving your skills, we provide the tools and insights you need to succeed.
             </p>
           </div>
-          
+
           <motion.a
-            href="https://github.com/Anurag-singh-thakur"
+            href="https://github.com/log1-codes"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-gradient-to-r from-blue-700 to-blue-600 rounded-lg font-medium text-white hover:from-blue-600 hover:to-blue-500 transition-all duration-300"
+            className="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-gradient-to-r from-orange-600 to-orange-500 rounded-lg font-medium text-white hover:from-orange-500 hover:to-orange-400 transition-all duration-300 shadow-lg hover:shadow-xl"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >

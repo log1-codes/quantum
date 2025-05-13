@@ -28,12 +28,12 @@ export const authOptions = {
     async signIn({ account, profile }) {
       await connectDB();
       const existingUser = await User.findOne({ email: profile.email });
-      
+
       if (existingUser) {
         if (!existingUser.providers.includes(account.provider)) {
           await User.findOneAndUpdate(
             { email: profile.email },
-            { 
+            {
               $push: { providers: account.provider },
               $set: { lastLogin: new Date() }
             }
@@ -52,13 +52,16 @@ export const authOptions = {
           codechef: "",
           codeforces: "",
           geeksforgeeks: "",
-          // hackerrank: "",
-          // github:""
+        },
+        socials: {
+          linkedin: "",
+          github: "",
+          twitter: ""
         },
         lastLogin: new Date(),
         createdAt: new Date()
       });
-      
+
       return true;
     },
     async session({ session, user }) {
@@ -68,6 +71,7 @@ export const authOptions = {
           ...session.user,
           username: userData.username,
           platforms: userData.platforms,
+          socials: userData.socials,
           providers: userData.providers
         };
       }

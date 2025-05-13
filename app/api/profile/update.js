@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     try {
       await connectDB();
 
-      const { username, platforms } = req.body;
+      const { username, platforms, socials } = req.body;
 
       if (!req.files || !req.files.image) {
         return res.status(400).json({ error: "Image file is required." });
@@ -28,8 +28,18 @@ export default async function handler(req, res) {
       fs.writeFileSync(uploadPath, imageFile.data);
 
       const parsedPlatforms = JSON.parse(platforms);
+      const parsedSocials = JSON.parse(socials);
 
-      const user = await User.findByIdAndUpdate(session.user.id, { username, image: imagePath, platforms: parsedPlatforms }, { new: true });
+      const user = await User.findByIdAndUpdate(
+        session.user.id,
+        { 
+          username, 
+          image: imagePath, 
+          platforms: parsedPlatforms, 
+          socials: parsedSocials 
+        },
+        { new: true }
+      );
 
       if (!user) {
         return res.status(404).json({ error: "User not found." });

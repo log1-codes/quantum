@@ -19,11 +19,16 @@ export async function PUT(request) {
     if (!data.platforms) {
       data.platforms = {};
     }
-
+    if(!data.socials) {
+      data.socials = {} ;
+    }
     Object.keys(data.platforms).forEach(platform => {
       data.platforms[platform] = data.platforms[platform]?.trim() || '';
     });
-
+    
+    Object.keys(data.socials).forEach(social=>{
+      data.socials[social] = data.socials[social]?.trim()||'';
+    })
     console.log("Updating user with data:", data);
 
     await connectDB();
@@ -33,7 +38,8 @@ export async function PUT(request) {
       {
         name: data.name,
         username: data.username,
-        platforms: data.platforms
+        platforms: data.platforms,
+        socials : data.socials
       },
       { new: true, upsert: true }
     );

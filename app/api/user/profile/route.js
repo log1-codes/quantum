@@ -24,7 +24,8 @@ export async function GET() {
       email: user.email,
       image: user.image,  
       username: user.username,
-      platforms: user.platforms
+      platforms: user.platforms,
+      socials : user.socials
     });
   } catch (error) {
     console.error(error);

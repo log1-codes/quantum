@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { string } from 'zod';
 
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -10,6 +11,11 @@ const UserSchema = new mongoose.Schema({
     codechef: { type: String },
     codeforces: { type: String },
     geeksforgeeks: { type: String }
+  },
+  socials:{
+    linkedin :{type : String}, 
+    twitter :{type :String}, 
+    github  :{ type : String}
   },
   providers: [String],
   lastLogin: { type: Date, default: Date.now },

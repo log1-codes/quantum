@@ -161,7 +161,7 @@ export default function Navbar() {
     setIsSearchOpen(false);
     setSearchResults([]);
     setSearchQuery("");
-    router.push(`/chat?user=${encodeURIComponent(user.email)}`);
+    router.push(`/chat?user=${user.email}`); // Use the raw email without encoding
   };
 
   const navItems = [
@@ -230,7 +230,7 @@ export default function Navbar() {
                     quantum
                   </span>
                   <span className="absolute right-0 bottom-0 text-xs text-violet-300 font-mono">
-                    v1.1
+                    v1.2
                   </span>
                 </div>
 

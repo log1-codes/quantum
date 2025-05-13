@@ -25,7 +25,8 @@ export async function GET(request) {
     }
 
     return NextResponse.json({
-      platforms: user.platforms || {}
+      platforms: user.platforms || {} ,
+      socials :user.socials || {}
     });
   } catch (error) {
     console.error('Error:', error);

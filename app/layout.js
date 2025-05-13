@@ -13,7 +13,10 @@ export default function RootLayout({ children }) {
         <SessionWrapper>
           <Navbar />
           {children}
-          <Toaster />
+          <Toaster
+          position="top-right"
+          reverseOrder={false}
+           />
         </SessionWrapper>
       </body>
     </html>

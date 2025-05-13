@@ -21,10 +21,10 @@ export default function UserStats() {
         if (!response.ok) throw new Error('Failed to fetch user platforms');
         const data = await response.json();
         setPlatformUsernames(data.platforms);
-        
+
         const statsPromises = Object.entries(data.platforms).map(async ([platform, platformUsername]) => {
           if (!platformUsername) return [platform, null];
-          
+
           try {
             const statsResponse = await fetch(`/api/platforms/stats/${platform}?username=${platformUsername}`);
             if (!statsResponse.ok) throw new Error(`Failed to fetch ${platform} stats`);
@@ -32,7 +32,13 @@ export default function UserStats() {
             return [platform, statsData];
           } catch (error) {
             console.error(`Error fetching ${platform} stats:`, error);
-            toast.error(`Failed to fetch ${platform} stats`);
+            toast.error(`Failed to fetch ${platform} stats`, {
+              style: {
+                background: '#ff7a00',
+                color: '#ffffff',
+                fontWeight: '500',
+              },
+            });
             return [platform, null];
           }
         });
@@ -42,7 +48,13 @@ export default function UserStats() {
         setStats(statsObject);
       } catch (error) {
         console.error('Error:', error);
-        toast.error('Failed to fetch user data');
+        toast.error('Failed to fetch user data', {
+          style: {
+            background: '#ff7a00',
+            color: '#ffffff',
+            fontWeight: '500',
+          },
+        });
       } finally {
         setLoading(false);
       }
@@ -83,7 +95,7 @@ export default function UserStats() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Object.entries(platformUsernames).map(([platform, platformUsername]) => {
             if (!platformUsername) return null;
-            
+
             return (
               <motion.div
                 key={platform}
@@ -98,7 +110,7 @@ export default function UserStats() {
                 <p className="text-zinc-400 mb-4">
                   Username: {platformUsername}
                 </p>
-                
+
                 {stats && stats[platform] ? (
                   <div className="space-y-2">
                     {platform === 'leetcode' && (
@@ -117,7 +129,7 @@ export default function UserStats() {
                         </p>
                       </>
                     )}
-                    
+
                     {platform === 'codeforces' && (
                       <>
                         <p className="text-zinc-300">
@@ -131,7 +143,7 @@ export default function UserStats() {
                         </p>
                       </>
                     )}
-                    
+
                   </div>
                 ) : (
                   <p className="text-zinc-500">Failed to fetch stats</p>

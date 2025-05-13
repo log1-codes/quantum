@@ -4,10 +4,11 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { Send, MessageSquare, Loader2, Smile, Pencil, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import EmojiPicker from 'emoji-picker-react';
-const REACTIONS = ["👍", "❤️", "😂", "😮", "🤬" , "😎" ,"😢", "🙏", "😭", "☠️", "🤷‍♂️", "🚀", "❌"];
+import EmojiPicker from "emoji-picker-react";
 
-export default function ChatWindow({ selectedUser , onMessageReceived }) {
+const REACTIONS = ["👍", "❤️", "😂", "😮", "🤬", "😎", "😢", "🙏", "😭", "☠️", "🤷‍♂️", "🚀", "❌"];
+
+export default function ChatWindow({ selectedUser, onMessageReceived }) {
   const { data: session } = useSession();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
@@ -17,15 +18,16 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
   const [editingMessage, setEditingMessage] = useState(null);
   const [showReactions, setShowReactions] = useState(null);
   const [reactionPopupVisible, setReactionPopupVisible] = useState(false);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false); 
-  const emojiPickerRef = useRef(null); 
-  const emojiButtonRef = useRef(null); 
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const emojiPickerRef = useRef(null);
+  const emojiButtonRef = useRef(null);
+
   useEffect(() => {
-    if (selectedUser ) {
+    if (selectedUser) {
       setMessages([]);
       fetchMessages();
     }
-  }, [selectedUser ]);
+  }, [selectedUser]);
 
   useEffect(() => {
     scrollToBottom();
@@ -33,10 +35,10 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
     if (messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
       if (lastMessage.senderEmail !== session?.user?.email) {
-        onMessageReceived?.(selectedUser .email, lastMessage);
+        onMessageReceived?.(selectedUser.email, lastMessage);
       }
     }
-  }, [messages, selectedUser ?.email, session?.user?.email, onMessageReceived]);
+  }, [messages, selectedUser?.email, session?.user?.email, onMessageReceived]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -47,7 +49,7 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
     setError("");
 
     try {
-      const response = await fetch(`/api/messages?recipientEmail=${selectedUser ?.email}`);
+      const response = await fetch(`/api/messages?recipientEmail=${selectedUser?.email}`);
       if (!response.ok) throw new Error("Failed to fetch messages");
       const data = await response.json();
       setMessages(data.messages);
@@ -61,7 +63,7 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
 
   const sendMessage = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim() || !selectedUser ) return;
+    if (!newMessage.trim() || !selectedUser) return;
 
     const tempId = Date.now().toString();
     const tempMessage = {
@@ -84,7 +86,7 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          recipientEmail: selectedUser .email,
+          recipientEmail: selectedUser.email,
           content: newMessage,
         }),
       });
@@ -141,7 +143,7 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
   const handleReaction = async (messageId, reaction) => {
     setMessages((prevMessages) =>
       prevMessages.map((msg) =>
-        msg._id === messageId ? { ...msg, reactions: [reaction] } : msg 
+        msg._id === messageId ? { ...msg, reactions: [reaction] } : msg
       )
     );
 
@@ -173,12 +175,12 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
       setReactionPopupVisible(false);
     }
     if (
-      emojiPickerRef.current && 
-      !emojiPickerRef.current.contains(event.target) && 
-      emojiButtonRef.current && 
+      emojiPickerRef.current &&
+      !emojiPickerRef.current.contains(event.target) &&
+      emojiButtonRef.current &&
       !emojiButtonRef.current.contains(event.target)
     ) {
-      setShowEmojiPicker(false); 
+      setShowEmojiPicker(false);
     }
   };
 
@@ -190,45 +192,46 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
   }, [showReactions]);
 
   const handleEmojiClick = (emojiData) => {
-    setNewMessage((prev) => prev + emojiData.emoji); 
+    setNewMessage((prev) => prev + emojiData.emoji);
   };
+
   return (
-    <div className="flex flex-col h-full bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 border border-zinc-700/50 overflow-hidden rounded-2xl shadow-2xl relative z-10">
+    <div className="flex flex-col h-full bg-gradient-to-br from-zinc-950 to-black border border-orange-800/30 overflow-hidden rounded-2xl shadow-2xl relative z-10">
       {/* Chat Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-4 border-b border-zinc-700/50 backdrop-blur-lg bg-zinc-800/90 flex items-center gap-3 z-10"
+        className="p-4 border-b border-orange-800/30 backdrop-blur-lg bg-zinc-900/90 flex items-center gap-3 z-10"
       >
         <div className="relative">
-          {selectedUser ?.image ? (
+          {selectedUser?.image ? (
             <Image
-              src={ selectedUser .image || "/placeholder.svg"}
-              alt={selectedUser .name}
+              src={selectedUser.image || "/placeholder.svg"}
+              alt={selectedUser.name}
               width={48}
               height={48}
-              className="rounded-full ring-2 ring-blue-500/30 transition-all duration-300 hover:ring-blue-500/50"
+              className="rounded-full ring-2 ring-orange-500/30 transition-all duration-300 hover:ring-orange-500/50"
             />
           ) : (
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
-              <MessageSquare className="w-6 h-6 text-blue-400" />
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500/20 to-yellow-500/20 flex items-center justify-center">
+              <MessageSquare className="w-6 h-6 text-orange-400" />
             </div>
           )}
         </div>
         <div className="flex-1">
-          <h2 className="font-bold text-white text-lg">{selectedUser .name}</h2>
-          <p className="text-sm text-zinc-400">{selectedUser .email}</p>
+          <h2 className="font-bold text-white text-lg">{selectedUser.name}</h2>
+          <p className="text-sm text-zinc-400">{selectedUser.email}</p>
         </div>
       </motion.div>
 
       {/* Messages Area */}
       <div
-        className="flex-1 overflow-y-auto p-4 space-y-4 relative"
+        className="flex-1 overflow-y-auto p-4 space-y-4 relative custom-scrollbar"
         style={{
-          backgroundImage: 'radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%)',
-          backgroundSize: '200% 200%',
-          backgroundPosition: 'center',
-          animation: 'pulse 15s infinite'
+          backgroundImage: "radial-gradient(circle at center, rgba(234,179,8,0.1) 0%, transparent 70%)",
+          backgroundSize: "200% 200%",
+          backgroundPosition: "center",
+          animation: "pulse 15s infinite",
         }}
       >
         {isLoading ? (
@@ -239,8 +242,8 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
           >
             <div className="flex flex-col items-center gap-3">
               <div className="relative">
-                <div className="w-8 h-8 border-4 border-blue-500/20 rounded-full animate-ping absolute"></div>
-                <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+                <div className="w-8 h-8 border-4 border-orange-500/20 rounded-full animate-ping absolute"></div>
+                <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
               </div>
               <p className="text-sm text-zinc-400 animate-pulse">Loading messages...</p>
             </div>
@@ -255,7 +258,7 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
               <p className="text-red-400 mb-2">{error}</p>
               <button
                 onClick={fetchMessages}
-                className="text-sm text-blue-400 hover:text-blue-300 transition-colors duration-200"
+                className="text-sm text-orange-400 hover:text-orange-300 transition-colors duration-200"
               >
                 Try again
               </button>
@@ -270,7 +273,7 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
                 className={`flex ${
-                  message.senderEmail === session?.user?.email ? 'justify-end' : 'justify-start'
+                  message.senderEmail === session?.user?.email ? "justify-end" : "justify-start"
                 }`}
               >
                 <div className="flex items-start gap-2 max-w-[80%] md:max-w-[70%] group relative">
@@ -285,26 +288,26 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
                   )}
                   <div className="relative">
                     {/* Message Actions */}
-                    <div className="absolute -top-8 left-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-zinc-800/90 rounded-full p-1 shadow-lg z-10">
+                    <div className="absolute -top-8 left-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-zinc-900/90 rounded-full p-1 shadow-lg z-10">
                       <button
                         onClick={() => handleReactionClick(message._id)}
-                        className="p-1 hover:bg-zinc-700/50 rounded-full transition-colors"
+                        className="p-1 hover:bg-zinc-800/50 rounded-full transition-colors"
                       >
-                        <Smile className="w-4 h-4 text-zinc-400" />
+                        <Smile className="w-4 h-4 text-orange-400" />
                       </button>
                       {message.senderEmail === session?.user?.email && (
                         <>
                           <button
                             onClick={() => setEditingMessage(message._id)}
-                            className="p-1 hover:bg-zinc-700/50 rounded-full transition-colors"
+                            className="p-1 hover:bg-zinc-800/50 rounded-full transition-colors"
                           >
-                            <Pencil className="w-4 h-4 text-zinc-400" />
+                            <Pencil className="w-4 h-4 text-orange-400" />
                           </button>
                           <button
                             onClick={() => handleDeleteMessage(message._id)}
-                            className="p-1 hover:bg-zinc-700/50 rounded-full transition-colors"
+                            className="p-1 hover:bg-zinc-800/50 rounded-full transition-colors"
                           >
- <Trash2 className="w-4 h-4 text-zinc-400" />
+                            <Trash2 className="w-4 h-4 text-orange-400" />
                           </button>
                         </>
                       )}
@@ -323,12 +326,12 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
                         <input
                           name="content"
                           defaultValue={message.content}
-                          className="flex-1 p-2 bg-zinc-800/50 border border-zinc-700/50 rounded-xl text-zinc-100"
+                          className="flex-1 p-2 bg-zinc-900/50 border border-orange-800/50 rounded-xl text-zinc-100"
                           autoFocus
                         />
                         <button
                           type="submit"
-                          className="px-3 py-1 bg-blue-500 text-white rounded-lg"
+                          className="px-3 py-1 bg-orange-500 text-white rounded-lg"
                         >
                           Save
                         </button>
@@ -338,8 +341,8 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
                         <div
                           className={`p-3 rounded-2xl shadow-lg backdrop-blur-sm ${
                             message.senderEmail === session?.user?.email
-                              ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-br-sm'
-                              : 'bg-gradient-to-br from-zinc-700/50 to-zinc-800/50 text-zinc-100 rounded-bl-sm'
+                              ? "bg-gradient-to-br from-orange-600 to-orange-700 text-white rounded-br-sm"
+                              : "bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 text-zinc-100 rounded-bl-sm"
                           }`}
                         >
                           {message.content}
@@ -350,13 +353,13 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
                           <motion.div
                             initial={{ scale: 0.95, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            className="absolute left-0 bg-zinc-800 rounded-full p-1 flex gap-1 shadow-lg z-20 reaction-popup"
+                            className="absolute left-0 bg-zinc-900 rounded-full p-1 flex gap-1 shadow-lg z-20 reaction-popup"
                             style={{
-                              top: 'auto',
-                              bottom: '100%',
-                              marginBottom: '8px',
-                              overflowX: 'auto',
-                              whiteSpace: 'nowrap',
+                              top: "auto",
+                              bottom: "100%",
+                              marginBottom: "8px",
+                              overflowX: "auto",
+                              whiteSpace: "nowrap",
                             }}
                           >
                             {REACTIONS.slice(0, 4).map((reaction) => (
@@ -367,7 +370,7 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
                                   setShowReactions(null);
                                   setReactionPopupVisible(false);
                                 }}
-                                className="hover:bg-zinc-700 rounded-full w-8 h-8 flex items-center justify-center transition-colors"
+                                className="hover:bg-zinc-800 rounded-full w-8 h-8 flex items-center justify-center transition-colors"
                               >
                                 {reaction}
                               </button>
@@ -386,7 +389,7 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
                             {message.reactions.map((reaction, i) => (
                               <span
                                 key={i}
-                                className="bg-zinc-800/50 rounded-full px-2 py-1 text-xs"
+                                className="bg-zinc-900/50 rounded-full px-2 py-1 text-xs"
                               >
                                 {reaction}
                               </span>
@@ -396,14 +399,14 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
                       </>
                     )}
                     <div className="flex items-center gap-2 text-xs text-zinc-500 mt-1 px-1">
-                      {new Date(message.timestamp).toLocaleTimeString([], { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
+                      {new Date(message.timestamp).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
                       })}
-                      {message.status === 'sending' && (
+                      {message.status === "sending" && (
                         <Loader2 className="w-3 h-3 animate-spin" />
                       )}
-                      {message.status === 'error' && (
+                      {message.status === "error" && (
                         <span className="text-red-400">Failed to send</span>
                       )}
                     </div>
@@ -417,10 +420,10 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
       </div>
 
       {/* Message Input */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-4 border-t border-zinc-700/50 backdrop-blur-lg bg-zinc-800/90 z-10"
+        className="p-4 border-t border-orange-800/30 backdrop-blur-lg bg-zinc-900/90 z-10"
       >
         <form onSubmit={sendMessage} className="flex gap-2">
           <input
@@ -428,25 +431,28 @@ export default function ChatWindow({ selectedUser , onMessageReceived }) {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type your message..."
-            className="flex-1 p-3 bg-zinc-700/50 border border-zinc-600/50 rounded-xl text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-200"
+            className="flex-1 p-3 bg-zinc-800/50 border border-orange-700/50 rounded-xl text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-transparent transition-all duration-200"
           />
-           <button
+          <button
             type="button"
             ref={emojiButtonRef}
-            onClick={() => setShowEmojiPicker((prev) => !prev)} 
-            className="p-3 bg-zinc-700 rounded-lg"
+            onClick={() => setShowEmojiPicker((prev) => !prev)}
+            className="p-3 bg-zinc-800 rounded-lg"
           >
-            <Smile/>
+            <Smile className="text-orange-400" />
           </button>
           {showEmojiPicker && (
-           
-            <div   ref={emojiPickerRef} className="absolute z-10" style={{ bottom: '100%', left: '0', transform: 'translateY(-8px)' }}> {/* Adjusted positioning */}
-              <EmojiPicker onEmojiClick={handleEmojiClick} /> 
+            <div
+              ref={emojiPickerRef}
+              className="absolute z-10"
+              style={{ bottom: "100%", left: "0", transform: "translateY(-8px)" }}
+            >
+              <EmojiPicker onEmojiClick={handleEmojiClick} />
             </div>
           )}
           <motion.button
             type="submit"
- className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white rounded-xl transition-all duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+            className="px-4 py-2 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white rounded-xl transition-all duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
             disabled={!newMessage.trim()}
           >
             <Send className="w-4 h-4" />
