@@ -36,7 +36,10 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-900 via-black to-black flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-zinc-950 to-black relative flex items-center justify-center p-4">
+      {/* Radial Gradient Overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(234,179,8,0.1),transparent_50%)] pointer-events-none" />
+      
       <motion.div
         initial="hidden"
         animate="visible"
