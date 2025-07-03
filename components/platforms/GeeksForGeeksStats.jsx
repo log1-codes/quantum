@@ -8,49 +8,62 @@ export default function GeeksForGeeksStats({ stats }) {
 
   if (!stats) {
     return (
-      <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl border border-orange-800/30 p-6 shadow-lg">
-        <div className="flex items-center gap-4 mb-8">
-          <SiGeeksforgeeks className="text-orange-500 text-3xl" />
-          <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-yellow-600 bg-clip-text text-transparent">GeeksForGeeks</h3>
-        </div>
-        <div className="flex flex-col items-center justify-center py-12 space-y-4">
-          <div className="w-16 h-16 rounded-full bg-zinc-800 flex items-center justify-center">
-            <SiGeeksforgeeks className="text-orange-500/50 text-3xl" />
+      <div className="relative bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-black/80 backdrop-blur-xl rounded-3xl border border-orange-500/20 p-8 shadow-2xl overflow-hidden">
+        {/* Animated background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5 animate-pulse"></div>
+        {/* Glassmorphism overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] via-transparent to-white/[0.01] backdrop-blur-sm rounded-3xl"></div>
+        {/* Floating orbs for ambient effect */}
+        <div className="absolute top-4 right-4 w-32 h-32 bg-gradient-to-br from-orange-500/10 to-amber-500/10 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute bottom-4 left-4 w-24 h-24 bg-gradient-to-br from-orange-500/5 to-amber-500/5 rounded-full blur-xl animate-pulse" style={{animationDelay: '1s'}}></div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FFA116] to-[#FF8C00] flex items-center justify-center shadow-lg shadow-orange-500/25 animate-pulse">
+              <SiGeeksforgeeks className="text-white text-2xl" />
+            </div>
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-[#FFA116] to-yellow-500 bg-clip-text text-transparent">GeeksForGeeks</h3>
           </div>
-          <p className="text-orange-100 font-medium text-lg">GeeksForGeeks username not set</p>
-          <p className="text-zinc-400 text-sm max-w-sm text-center">
-            Please update your profile with your GeeksForGeeks username to see your statistics
-          </p>
-          <button className="mt-4 px-6 py-2 bg-orange-600 hover:bg-orange-500 transition-colors rounded-full text-white font-medium">
-            Update Profile
-          </button>
+          <div className="flex flex-col items-center justify-center py-16 space-y-6">
+            <div className="w-20 h-20 rounded-2xl bg-zinc-800/30 border border-zinc-700/30 flex items-center justify-center backdrop-blur-sm shadow-inner animate-bounce">
+              <SiGeeksforgeeks className="text-[#FFA116]/60 text-4xl" />
+            </div>
+            <div className="text-center space-y-2">
+              <p className="text-orange-100 font-semibold text-xl">GeeksForGeeks username not set</p>
+              <p className="text-zinc-400 text-sm max-w-md">
+                Please update your profile with your GeeksForGeeks username to see your statistics
+              </p>
+            </div>
+            <button className="mt-6 bg-gradient-to-r from-[#FFA116] to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:shadow-orange-500/25">
+              Update Profile
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   const renderTabs = () => (
-    <div className="flex mb-6 border-b border-zinc-800">
+    <div className="flex mb-6 bg-zinc-800/30 border border-zinc-700/30 rounded-xl p-1 backdrop-blur-md shadow-inner">
       <button
         onClick={() => setActiveTab("overview")}
-        className={`px-4 py-3 font-medium flex items-center gap-2 ${
+        className={`flex-1 px-4 py-3 font-medium flex items-center justify-center gap-2 rounded-lg transition-all duration-500 transform ${
           activeTab === "overview"
-            ? "text-orange-400 border-b-2 border-orange-500"
-            : "text-zinc-400 hover:text-zinc-300"
+            ? "bg-gradient-to-r from-[#FFA116]/30 to-orange-500/20 text-[#FFA116] border border-[#FFA116]/40 shadow-lg shadow-orange-500/20 scale-105 backdrop-blur-sm"
+            : "text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/20 hover:scale-102 backdrop-blur-sm"
         }`}
       >
-        <FaChartLine className="text-sm" />
+        <FaChartLine className="w-4 h-4" />
         Overview
       </button>
       <button
         onClick={() => setActiveTab("activity")}
-        className={`px-4 py-3 font-medium flex items-center gap-2 ${
+        className={`flex-1 px-4 py-3 font-medium flex items-center justify-center gap-2 rounded-lg transition-all duration-500 transform ${
           activeTab === "activity"
-            ? "text-orange-400 border-b-2 border-orange-500"
-            : "text-zinc-400 hover:text-zinc-300"
+            ? "bg-gradient-to-r from-[#FFA116]/30 to-orange-500/20 text-[#FFA116] border border-[#FFA116]/40 shadow-lg shadow-orange-500/20 scale-105 backdrop-blur-sm"
+            : "text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/20 hover:scale-102 backdrop-blur-sm"
         }`}
       >
-        <FaCalendarAlt className="text-sm" />
+        <FaCalendarAlt className="w-4 h-4" />
         Activity
       </button>
     </div>
@@ -156,18 +169,27 @@ export default function GeeksForGeeksStats({ stats }) {
   );
 
   return (
-    <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl border border-orange-800/30 p-6 shadow-lg">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-orange-600 to-orange-800 rounded-lg shadow-lg">
-            <SiGeeksforgeeks className="text-white text-2xl" />
+    <div className="relative bg-gradient-to-br from-zinc-900/80 via-zinc-900/60 to-black/80 backdrop-blur-xl rounded-3xl border border-orange-500/20 p-6 shadow-2xl overflow-hidden">
+      {/* Animated background effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5 animate-pulse"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/[0.02] via-transparent to-white/[0.01] backdrop-blur-sm rounded-3xl"></div>
+      {/* Floating orbs for ambient effect */}
+      <div className="absolute top-4 right-4 w-32 h-32 bg-gradient-to-br from-orange-500/10 to-amber-500/10 rounded-full blur-xl animate-pulse"></div>
+      <div className="absolute bottom-4 left-4 w-24 h-24 bg-gradient-to-br from-orange-500/5 to-amber-500/5 rounded-full blur-xl animate-pulse" style={{animationDelay: '1s'}}></div>
+      <div className="relative z-10">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-[#FFA116] to-[#FF8C00] rounded-lg shadow-lg shadow-orange-500/25 animate-pulse">
+              <SiGeeksforgeeks className="text-white text-2xl" />
+            </div>
+            <h3 className="text-xl font-bold text-white">GeeksForGeeks</h3>
           </div>
-          <h3 className="text-xl font-bold text-white">GeeksForGeeks</h3>
         </div>
+        {renderTabs()}
+        {activeTab === "overview" && renderOverview()}
+        {activeTab === "activity" && renderActivity()}
       </div>
-      {renderTabs()}
-      {activeTab === "overview" && renderOverview()}
-      {activeTab === "activity" && renderActivity()}
     </div>
   );
 }
