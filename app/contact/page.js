@@ -37,7 +37,7 @@ export default function ContactPage() {
         "r6IriyRkpZt3IkbLZ" 
       );
 
-      console.log("EmailJS Response:", result);
+      // console.log("EmailJS Response:", result);
       toast.success("Message sent successfully!", {
         style: {
           background: '#ff7a00',

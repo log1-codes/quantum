@@ -9,6 +9,7 @@ import { Edit2, Save, X, ExternalLink, User, Mail, Check } from "lucide-react";
 import { SiLeetcode, SiCodeforces, SiCodechef, SiGeeksforgeeks } from "react-icons/si";
 import { Camera } from "lucide-react";
 import { FaLinkedin, FaGithub, FaTwitter } from "react-icons/fa";
+import { useStats } from "@/components/StatsContext";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -32,6 +33,7 @@ export default function ProfilePage() {
       twitter: "",
     },
   });
+  const { removePlatformStats, refetchStats } = useStats();
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -122,6 +124,9 @@ export default function ProfilePage() {
           twitter: updatedData.socials?.twitter || prev.socials.twitter,
         },
       }));
+
+      // Always refetch stats after any profile update to ensure stats context is in sync
+      await refetchStats();
     } catch (error) {
       toast.error("Failed to update profile", {
         style: {
