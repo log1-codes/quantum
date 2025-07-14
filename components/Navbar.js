@@ -238,7 +238,7 @@ export default function Navbar() {
               </Link>
             </motion.div>
 
-            {/* Desktop Navigation - Hidden on mobile */}
+            
             <div className="hidden md:flex items-center gap-3">
               {navItems.map((item, i) => (
                 <motion.div

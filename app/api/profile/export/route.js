@@ -1,51 +1,49 @@
-"use client";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import User from "@/models/User";
+import connectDB from "@/lib/mongoose";
+import { NextResponse } from "next/server";
 
-import { useState } from 'react';
-import { Download } from 'lucide-react';
-import { toast } from 'react-hot-toast';
-
-export default function ExportButton() {
-  const [exporting, setExporting] = useState(false);
-
-  const handleExport = async () => {
-    try {
-      setExporting(true);
-      const response = await fetch('/api/profile/export');
-      
-      if (!response.ok) throw new Error('Export failed');
-
-      const contentDisposition = response.headers.get('Content-Disposition');
-      const filename = contentDisposition
-        ? contentDisposition.split('filename=')[1].replace(/"/g, '')
-        : 'codecracker-stats.json';
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-
-      toast.success('Stats exported successfully!');
-    } catch (error) {
-      toast.error('Failed to export stats');
-      console.error('Export error:', error);
-    } finally {
-      setExporting(false);
+// Handle GET request to export user profile and stats as JSON
+export async function GET() {
+  try {
+    // Authenticate user
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-  };
 
-  return (
-    <button
-      onClick={handleExport}
-      disabled={exporting}
-      className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 rounded-md transition-colors disabled:opacity-50"
-    >
-      <Download className="w-4 h-4" />
-      {exporting ? 'Exporting...' : 'Export Stats'}
-    </button>
-  );
+    await connectDB();
+    // Fetch user profile from DB
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Prepare export data (customize as needed)
+    const exportData = {
+      name: user.name,
+      email: user.email,
+      username: user.username,
+      image: user.image,
+      platforms: user.platforms,
+      socials: user.socials,
+      createdAt: user.createdAt,
+      lastLogin: user.lastLogin,
+    };
+    const json = JSON.stringify(exportData, null, 2);
+    const filename = `codecracker-profile-${user.username || "user"}.json`;
+
+    // Return as downloadable file
+    return new Response(json, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Disposition": `attachment; filename=\"${filename}\"`,
+      },
+    });
+  } catch (error) {
+    console.error("Export API error:", error);
+    return NextResponse.json({ error: "Failed to export profile" }, { status: 500 });
+  }
 }

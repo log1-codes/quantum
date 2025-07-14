@@ -10,6 +10,7 @@ import { SiLeetcode, SiCodeforces, SiCodechef, SiGeeksforgeeks } from "react-ico
 import { Camera } from "lucide-react";
 import { FaLinkedin, FaGithub, FaTwitter } from "react-icons/fa";
 import { useStats } from "@/components/StatsContext";
+import ExportProfileButtons from "@/components/profile/ExportProfileCard";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -142,10 +143,9 @@ export default function ProfilePage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-zinc-950 to-black text-white pt-20 pb-16 relative overflow-hidden">
-      {/* Improved background effects */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_800px_at_100px_100px,rgba(234,179,8,0.15),transparent_70%)] pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_600px_at_bottom_right,rgba(234,179,8,0.1),transparent_80%)] pointer-events-none" />
-      <div className="absolute w-full h-full bg-[url('/noise.png')] opacity-[0.02] mix-blend-overlay pointer-events-none" />
+      <div className="absolute w-full h-full  opacity-[0.02] mix-blend-overlay pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.h1 
@@ -592,6 +592,10 @@ function DisplayInfo({ userData }) {
           />
         </div>
       </motion.div>
+      {/* Export buttons for JSON and PNG */}
+      <div className="flex justify-end pt-2">
+        <ExportProfileButtons userData={userData} />
+      </div>
     </motion.div>
   );
 }
@@ -681,7 +685,6 @@ function PlatformCard({ platform, username, icon, link }) {
   );
 }
 
-// Missing components from import
 function Code(props) {
   return (
     <svg
