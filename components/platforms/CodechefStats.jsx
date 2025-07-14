@@ -49,7 +49,7 @@ export default function CodeChefStats({ stats }) {
               </p>
             </div>
             <button className="mt-6 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
-              Connect Profile
+              Update Profile
             </button>
           </div>
         </div>

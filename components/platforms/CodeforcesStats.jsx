@@ -34,7 +34,7 @@ export default function CodeforcesStats({ stats }) {
               </p>
             </div>
             <button className="mt-6 bg-gradient-to-r from-[#FFA116] to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:shadow-orange-500/25">
-              Connect Profile
+              Update Profile
             </button>
           </div>
         </div>

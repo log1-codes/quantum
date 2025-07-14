@@ -8,6 +8,7 @@ import {
   Activity,
   BarChart3,
   Hash,
+  Code,
   Trophy,
   CheckCircle,
 } from "lucide-react"
@@ -27,7 +28,7 @@ export default function LeetCodeStats({ stats }) {
         <div className="relative z-10">
           <div className="flex items-center gap-4 mb-8">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FFA116] to-[#FF8C00] flex items-center justify-center shadow-lg shadow-orange-500/25 animate-pulse">
-              <Hash className="text-white text-2xl" />
+              <Code className="text-white text-2xl" />
             </div>
             <h3 className="text-2xl font-bold bg-gradient-to-r from-[#FFA116] to-yellow-500 bg-clip-text text-transparent">
               LeetCode
@@ -36,7 +37,7 @@ export default function LeetCodeStats({ stats }) {
 
           <div className="flex flex-col items-center justify-center py-16 space-y-6">
             <div className="w-20 h-20 rounded-2xl bg-zinc-800/30 border border-zinc-700/30 flex items-center justify-center backdrop-blur-sm shadow-inner animate-bounce">
-              <Hash className="text-[#FFA116]/60 text-4xl" />
+              <Code className="text-[#FFA116]/60 text-4xl" />
             </div>
             <div className="text-center space-y-2">
               <p className="text-orange-100 font-semibold text-xl">LeetCode username not set</p>
@@ -46,7 +47,7 @@ export default function LeetCodeStats({ stats }) {
               </p>
             </div>
             <button className="mt-6 bg-gradient-to-r from-[#FFA116] to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:shadow-orange-500/25">
-              Connect Profile
+              Update Profile
             </button>
           </div>
         </div>
